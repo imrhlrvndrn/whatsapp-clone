@@ -7,12 +7,12 @@ import StyledMainApp from './StyledMainApp';
 import Sidebar from '../components/Sidebar/Sidebar';
 import MainChat from '../components/MainChat/MainChat';
 
-const MainApp = () => {
+const MainApp = ({ messages }) => {
     return (
         <StyledMainApp>
             <div className='mainApp'>
                 <Sidebar />
-                <MainChat />
+                <MainChat messages={messages} />
             </div>
         </StyledMainApp>
     );

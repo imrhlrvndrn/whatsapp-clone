@@ -5,6 +5,7 @@ export default styled.div`
     height: 100vh;
     display: grid;
     place-items: center;
+    background-color: rgb(${(props) => props.theme.darkBackground});
 
     .mainApp {
         display: flex;

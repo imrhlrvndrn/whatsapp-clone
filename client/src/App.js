@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import Pusher from 'pusher-js';
 import GlobalStyles from './styledcomponents/GlobalStyles';
 import { lightTheme, darkTheme } from './styledcomponents/Themes';
 import { ThemeProvider } from 'styled-components';
+import axios from './axios';
 
 // React components
 import MainApp from './pages/MainApp';
 
 const App = () => {
     const [themeState, setThemeState] = useState('light');
+    const [messages, setMessages] = useState([]);
     const theme = {
         ...(themeState === 'light' ? lightTheme : darkTheme),
         breakpoints: {
@@ -19,26 +22,40 @@ const App = () => {
     };
 
     useEffect(() => {
+        axios
+            .get('/messages/sync')
+            .then((response) => setMessages(response.data))
+            .catch((err) => console.log(err));
+    }, []);
+
+    useEffect(() => {
+        const pusher = new Pusher('950a3be25fe26045eb39', {
+            cluster: 'ap2',
+        });
+
+        const channel = pusher.subscribe('messages');
+        channel.bind('inserted', (newMessage) => {
+            setMessages([...messages, newMessage]);
+        });
+
         localStorage.setItem('theme', themeState);
-    }, [themeState]);
+
+        return () => {
+            channel.unbind_all();
+            channel.unsubscribe();
+        };
+    }, [themeState, messages]);
 
     const toggleTheme = () => {
         themeState === 'light' ? setThemeState('dark') : setThemeState('light');
     };
 
+    console.log(messages);
+
     return (
         <ThemeProvider theme={theme}>
             <GlobalStyles />
-            {/* <Router>
-                <Switch>
-                    <Route path='/auth/:authState' exact component={Auth} />
-                    <Route path='/' exact>
-                        <Redirect to='/overview' />
-                    </Route>
-                    <Route path='/:navState' exact component={Dashboard} />
-                </Switch>
-            </Router> */}
-            <MainApp />
+            <MainApp messages={messages} />
         </ThemeProvider>
     );
 };

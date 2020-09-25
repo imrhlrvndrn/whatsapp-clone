@@ -7,6 +7,10 @@ export default styled.div`
     cursor: pointer;
 
     &:hover {
+        background-color: rgb(${(props) => props.theme.lightBackground});
+    }
+
+    &.active {
         background-color: rgb(${(props) => props.theme.mediumBackground});
     }
 
