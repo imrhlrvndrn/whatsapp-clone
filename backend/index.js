@@ -6,7 +6,7 @@ require('dotenv').config();
 const messageRoutes = require('./routes/messageRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
 const pusher = new Pusher({
     appId: '1079627',
     key: '950a3be25fe26045eb39',
@@ -15,6 +15,11 @@ const pusher = new Pusher({
     encrypted: true,
 });
 
+// Middlewares
+app.use(express.json());
+app.use(cors());
+app.use('/messages', messageRoutes);
+
 // Connecting to MongoDB
 mongoose.connect(
     process.env.MONGODB_URI,
@@ -22,10 +27,11 @@ mongoose.connect(
     () => console.log('MongoDB database connection established successfully')
 );
 
-const db = mongoose.connection;
+let db = mongoose.connection;
 
 db.once('open', () => {
     const messageCollection = db.collection('messages');
+    console.log(messageCollection);
     const changeStream = messageCollection.watch();
 
     changeStream.on('change', (change) => {
@@ -46,11 +52,6 @@ db.once('open', () => {
     });
 });
 
-// Middlewares
-app.use(express.json());
-app.use(cors());
-app.use('/messages', messageRoutes);
+app.get('/', (req, res) => res.status(200).send('Hello world'));
 
-// app.get('/', (req, res) => res.status(200).send('Hello world'));
-
-app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
+app.listen(port, () => console.log(`Server is running on ${port}`));

@@ -1,30 +1,34 @@
 const router = require('express').Router();
 const Message = require('../models/Message');
 
-router.post('/new', async (req, res) => {
-    try {
-        const newMessage = new Message({
-            name: req.body.name,
-            message: req.body.message,
-            received: req.body.received,
+// Retrieve all the messages
+router.get('/sync', (req, res) => {
+    Message.find({})
+        .then(() => {
+            res.status(200).json(allMessages);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
         });
-
-        const savedMessage = await newMessage.save();
-        res.status(201).send(savedMessage);
-    } catch (error) {
-        console.log(err);
-        res.status(500).send(err);
-    }
 });
 
-router.get('/sync', async (req, res) => {
-    const allMessages = await Message.find({});
+// Add a new message
+router.post('/new', (req, res) => {
+    const newMessage = new Message({
+        name: req.body.name,
+        message: req.body.message,
+        received: req.body.received,
+    });
 
-    try {
-        res.status(200).send(allMessages);
-    } catch (error) {
-        res.status(500).send(error);
-    }
+    newMessage
+        .save()
+        .then((data) => {
+            res.status(201).json(data);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send(err);
+        });
 });
 
 module.exports = router;
