@@ -4,8 +4,8 @@ const Message = require('../models/Message');
 // Retrieve all the messages
 router.get('/sync', (req, res) => {
     Message.find({})
-        .then(() => {
-            res.status(200).json(allMessages);
+        .then((data) => {
+            res.status(200).json(data);
         })
         .catch((error) => {
             res.status(500).send(error);

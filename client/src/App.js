@@ -50,8 +50,6 @@ const App = () => {
         themeState === 'light' ? setThemeState('dark') : setThemeState('light');
     };
 
-    console.log(messages);
-
     return (
         <ThemeProvider theme={theme}>
             <GlobalStyles />

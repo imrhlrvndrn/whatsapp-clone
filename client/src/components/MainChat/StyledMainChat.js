@@ -64,52 +64,6 @@ export default styled.div`
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
-
-        &__messageContainer {
-            margin-bottom: 0.3rem;
-            padding: 1rem;
-            background-color: rgb(${(props) => props.theme.lightestBackground});
-            width: max-content;
-            max-width: 50%;
-            border-radius: 10px;
-
-            &.chat__receiver {
-                margin: 1rem 0 0.3rem auto;
-                background-color: rgb(${(props) => props.theme.constants.lightColorBackground});
-            }
-
-            &:first-child {
-                margin-top: 0.3rem;
-            }
-
-            &__userName {
-                font-size: 0.8rem;
-                font-weight: 600;
-                margin-bottom: 0.5rem;
-                text-transform: capitalize;
-                color: rgb(${(props) => props.theme.constants.colorBackground});
-            }
-
-            &__message {
-                margin-bottom: 0.5rem;
-            }
-
-            &__timestamp {
-                display: flex;
-                justify-content: flex-end;
-                align-items: center;
-
-                p {
-                    font-size: 0.8rem;
-                    opacity: 0.8;
-                }
-
-                svg {
-                    opacity: 0.2;
-                    margin-left: 1rem;
-                }
-            }
-        }
     }
 
     .mainChat__chatbarContainer {

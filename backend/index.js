@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const Pusher = require('pusher');
 require('dotenv').config();
 const messageRoutes = require('./routes/messageRoutes');
@@ -18,20 +19,25 @@ const pusher = new Pusher({
 // Middlewares
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
+// Route middlewares
 app.use('/messages', messageRoutes);
 
+//To fix all the deprecation warnings
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
 // Connecting to MongoDB
-mongoose.connect(
-    process.env.MONGODB_URI,
-    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true },
-    () => console.log('MongoDB database connection established successfully')
+mongoose.connect(process.env.MONGODB_URI, () =>
+    console.log('MongoDB database connection established successfully')
 );
 
 let db = mongoose.connection;
 
 db.once('open', () => {
     const messageCollection = db.collection('messages');
-    console.log(messageCollection);
     const changeStream = messageCollection.watch();
 
     changeStream.on('change', (change) => {

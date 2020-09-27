@@ -5,7 +5,6 @@ import axios from '../../axios';
 import AttachmentIcon from '../../React icons/AttachmentIcon';
 import MoreOptionsIcon from '../../React icons/MoreOptionsIcon';
 import SearchIcon from '../../React icons/SearchIcon';
-import ReadIcon from '../../React icons/ReadIcon';
 import SmileIcon from '../../React icons/SmileIcon';
 import MicIcon from '../../React icons/MicIcon';
 
@@ -14,6 +13,7 @@ import StyledMainChat from './StyledMainChat';
 
 // React components
 import Avatar from '../Avatar/Avatar';
+import Messages from './Messages/Messages';
 
 const MainChat = ({ messages }) => {
     const [input, setInput] = useState('');
@@ -21,10 +21,12 @@ const MainChat = ({ messages }) => {
     const sendMessage = async (e) => {
         e.preventDefault();
 
+        if (input === '') return;
+
         await axios.post('/messages/new', {
             message: input,
             name: 'Rahul Ravindran',
-            received: false,
+            received: true,
         });
         console.log('message sent');
 
@@ -52,20 +54,7 @@ const MainChat = ({ messages }) => {
 
             <div className='mainChat__body'>
                 {messages.map((message) => (
-                    <div
-                        className={`mainChat__body__messageContainer ${
-                            message.received && 'chat__receiver'
-                        }`}
-                    >
-                        <p className='mainChat__body__messageContainer__userName'>{message.name}</p>
-                        <p className='mainChat__body__messageContainer__message'>
-                            {message.message}
-                        </p>
-                        <div className='mainChat__body__messageContainer__timestamp'>
-                            <p>{message.createdAt.toString()}</p>
-                            <ReadIcon fill='blue' width='20px' height='20px' />
-                        </div>
-                    </div>
+                    <Messages message={message} />
                 ))}
             </div>
 
