@@ -10,7 +10,7 @@ const userSchema = new Schema(
             is_verified: { type: Boolean },
         },
         bio: { type: String },
-        displayImageUrl: { type: String },
+        display_image_url: { type: String },
         status: [
             {
                 imageUrl: { type: String },

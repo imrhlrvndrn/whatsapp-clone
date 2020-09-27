@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from '../../axios';
 
 // React icons
@@ -18,19 +18,20 @@ import Messages from './Messages/Messages';
 const MainChat = ({ messages }) => {
     const [input, setInput] = useState('');
 
-    const sendMessage = async (e) => {
-        e.preventDefault();
+    const sendMessage = (event) => {
+        event.preventDefault();
 
         if (input === '') return;
 
-        await axios.post('/messages/new', {
-            message: input,
-            name: 'Rahul Ravindran',
-            received: true,
-        });
-        console.log('message sent');
-
-        setInput('');
+        axios
+            .post('/messages/new', {
+                message: input,
+                name: 'Rahul Ravindran',
+                received: true,
+            })
+            .then(() => {
+                setInput('');
+            });
     };
 
     return (
@@ -56,6 +57,7 @@ const MainChat = ({ messages }) => {
                 {messages.map((message) => (
                     <Messages message={message} />
                 ))}
+                <div id='messagesEnd' style={{ visibility: 'hidden' }}></div>
             </div>
 
             <div className='mainChat__chatbarContainer'>
