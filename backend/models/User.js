@@ -17,8 +17,8 @@ const userSchema = new Schema(
                 timestamp: { type: Date },
             },
         ],
-        groupIds: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
-        dmIds: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
+        groupids: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
+        privatedmids: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
     },
     { timestamps: true }
 );

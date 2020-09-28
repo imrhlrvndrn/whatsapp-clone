@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const memberSchema = new Schema(
     {
-        userId: { type: Schema.Types.ObjectId, ref: 'User' },
-        groupId: { type: Schema.Types.ObjectId, ref: 'Group' },
+        userid: { type: Schema.Types.ObjectId, ref: 'User' },
+        groupid: { type: Schema.Types.ObjectId, ref: 'Group' },
         roles: [{ type: String }],
     },
     { timestamps: true }
