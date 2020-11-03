@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { db } from '../../firebase';
 
 // Styled conponents
 import StyledSidebar from './StyledSidebar';
@@ -14,6 +15,27 @@ import SearchIcon from '../../React icons/SearchIcon';
 import SidebarChat from './SidebarChat/SidebarChat';
 
 const Sidebar = () => {
+    const [rooms, setRooms] = useState([]);
+
+    useEffect(() => {
+        const unsubscribe = db.collection('rooms').onSnapshot((snapshot) => {
+            setRooms(
+                snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    data: doc.data(),
+                }))
+            );
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    const createNewChat = () => {
+        const newChatName = prompt('Enter a name for the new chat');
+
+        if (newChatName) db.collection('rooms').add({ name: newChatName });
+    };
+
     return (
         <StyledSidebar>
             <div className='sidebar__header'>
@@ -40,7 +62,13 @@ const Sidebar = () => {
                 </div>
             </div>
             <div className='sidebarChat'>
+                <div className='addNewRoom' onClick={createNewChat}>
+                    Start new chat
+                </div>
                 <SidebarChat />
+                {rooms?.map((room) => (
+                    <SidebarChat key={room.id} id={room.id} name={room.data.name} />
+                ))}
             </div>
         </StyledSidebar>
     );

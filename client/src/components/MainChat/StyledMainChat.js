@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 75%;
 
     .mainChat__header {
         padding: 1rem;
