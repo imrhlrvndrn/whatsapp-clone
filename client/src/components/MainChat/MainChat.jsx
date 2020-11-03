@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../../axios';
+import { db } from '../../firebase';
 
 // React icons
 import AttachmentIcon from '../../React icons/AttachmentIcon';
@@ -15,23 +15,37 @@ import StyledMainChat from './StyledMainChat';
 import Avatar from '../Avatar/Avatar';
 import Messages from './Messages/Messages';
 
-const MainChat = ({ messages }) => {
+const MainChat = ({ messages, match }) => {
+    console.log('Match', match);
+    const chatId = match.params.chatId;
+    const [chatName, setChatName] = useState('');
     const [input, setInput] = useState('');
+
+    useEffect(() => {
+        if (chatId) {
+            db.collection('chats')
+                .doc(chatId)
+                .onSnapshot((snapshot) => {
+                    setChatName(snapshot?.data()?.name);
+                });
+        }
+    }, [chatId]);
 
     const sendMessage = (event) => {
         event.preventDefault();
 
         if (input === '') return;
 
-        axios
-            .post('/messages/new', {
-                message: input,
-                name: 'Rahul Ravindran',
-                received: true,
-            })
-            .then(() => {
-                setInput('');
-            });
+        // axios
+        //     .post('/messages/new', {
+        //         message: input,
+        //         name: 'Rahul Ravindran',
+        //         received: true,
+        //     })
+        //     .then(() => {
+        //         setInput('');
+        //     });
+        db.collection('messages').add({});
     };
 
     return (
@@ -43,7 +57,7 @@ const MainChat = ({ messages }) => {
                     imgUrl='https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
                 />
                 <div className='mainChat__header__info'>
-                    <h2>Room name</h2>
+                    <h2>{chatName}</h2>
                     <p className='mainChat__header__info__lastSeen'>Last seen at ...</p>
                 </div>
                 <div className='mainChat__header__icons'>
@@ -54,9 +68,9 @@ const MainChat = ({ messages }) => {
             </div>
 
             <div className='mainChat__body'>
-                {messages.map((message) => (
+                {/* {messages.map((message) => (
                     <Messages message={message} />
-                ))}
+                ))} */}
                 <div id='messagesEnd' style={{ visibility: 'hidden' }}></div>
             </div>
 

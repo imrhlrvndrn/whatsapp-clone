@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 
 // Styled components
 import StyledMainApp from './StyledMainApp';
@@ -11,8 +12,10 @@ const MainApp = ({ messages }) => {
     return (
         <StyledMainApp>
             <div className='mainApp'>
-                <Sidebar />
-                <MainChat messages={messages} />
+                <Router>
+                    <Sidebar />
+                    <Route exact path='/chats/:chatId' component={MainChat} />
+                </Router>
             </div>
         </StyledMainApp>
     );

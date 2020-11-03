@@ -12,5 +12,6 @@ export default styled.div`
         width: 90vw;
         height: 90vh;
         box-shadow: 0 0 10px 0 black;
+        background-color: white;
     }
 `;

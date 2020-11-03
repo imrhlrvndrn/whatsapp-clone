@@ -18,7 +18,7 @@ const Sidebar = () => {
     const [rooms, setRooms] = useState([]);
 
     useEffect(() => {
-        const unsubscribe = db.collection('rooms').onSnapshot((snapshot) => {
+        const unsubscribe = db.collection('chats').onSnapshot((snapshot) => {
             setRooms(
                 snapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -33,7 +33,7 @@ const Sidebar = () => {
     const createNewChat = () => {
         const newChatName = prompt('Enter a name for the new chat');
 
-        if (newChatName) db.collection('rooms').add({ name: newChatName });
+        if (newChatName) db.collection('chats').add({ name: newChatName });
     };
 
     return (
