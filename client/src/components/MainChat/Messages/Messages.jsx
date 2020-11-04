@@ -16,19 +16,6 @@ const Messages = ({ message }) => {
         setRead(true);
     }, []);
 
-    const convertTime = (timestamp) => {
-        let theDate = new Date(timestamp);
-        console.log(timestamp);
-        let hours = Math.floor(timestamp?.seconds / 86400);
-        let minutes = Math.floor((timestamp?.seconds % 3600) / 60);
-        // let hours = theDate.getHours().toString().padStart(2, '0');
-        // let minutes = theDate.getMinutes().toString().padStart(2, '0');
-
-        let dateString = `${hours}:${minutes} ${hours >= 12 ? 'PM' : 'AM'}`;
-
-        return dateString;
-    };
-
     return (
         <StyledMessages
             read={read}

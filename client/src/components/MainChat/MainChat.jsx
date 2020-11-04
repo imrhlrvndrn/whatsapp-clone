@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import firebase from 'firebase';
 import { db } from '../../firebase';
 import { useDataLayerValue } from '../../DataLayer';
@@ -18,7 +19,6 @@ import Avatar from '../Avatar/Avatar';
 import Messages from './Messages/Messages';
 
 const MainChat = ({ match }) => {
-    console.log('Match', match);
     const [{ user }, dispatch] = useDataLayerValue();
     const chatId = match.params.chatId;
     const [messages, setMessages] = useState([]);
@@ -61,7 +61,12 @@ const MainChat = ({ match }) => {
                 <Avatar width='45px' height='45px' />
                 <div className='mainChat__header__info'>
                     <h2>{chatName}</h2>
-                    <p className='mainChat__header__info__lastSeen'>Last seen at ...</p>
+                    <p className='mainChat__header__info__lastSeen'>
+                        Last message on{' '}
+                        {moment(
+                            new Date(messages[messages.length - 1]?.timestamp?.toDate())
+                        ).format('hh:mm A')}
+                    </p>
                 </div>
                 <div className='mainChat__header__icons'>
                     {/* <AttachmentIcon /> */}
@@ -72,7 +77,7 @@ const MainChat = ({ match }) => {
 
             <div className='mainChat__body'>
                 {messages.map((message) => (
-                    <Messages message={message} />
+                    <Messages key={message.id} message={message} />
                 ))}
                 <div id='messagesEnd' style={{ visibility: 'hidden' }}></div>
             </div>
