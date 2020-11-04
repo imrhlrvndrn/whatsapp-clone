@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import firebase from 'firebase';
 import { db } from '../../firebase';
+import { useDataLayerValue } from '../../DataLayer';
 
 // React icons
 import AttachmentIcon from '../../React icons/AttachmentIcon';
@@ -15,9 +17,11 @@ import StyledMainChat from './StyledMainChat';
 import Avatar from '../Avatar/Avatar';
 import Messages from './Messages/Messages';
 
-const MainChat = ({ messages, match }) => {
+const MainChat = ({ match }) => {
     console.log('Match', match);
+    const [{ user }, dispatch] = useDataLayerValue();
     const chatId = match.params.chatId;
+    const [messages, setMessages] = useState([]);
     const [chatName, setChatName] = useState('');
     const [input, setInput] = useState('');
 
@@ -28,34 +32,33 @@ const MainChat = ({ messages, match }) => {
                 .onSnapshot((snapshot) => {
                     setChatName(snapshot?.data()?.name);
                 });
+
+            db.collection('chats')
+                .doc(chatId)
+                .collection('messages')
+                .orderBy('timestamp', 'asc')
+                .onSnapshot((snapshot) => setMessages(snapshot.docs.map((doc) => doc.data())));
         }
     }, [chatId]);
 
     const sendMessage = (event) => {
         event.preventDefault();
-
         if (input === '') return;
 
-        // axios
-        //     .post('/messages/new', {
-        //         message: input,
-        //         name: 'Rahul Ravindran',
-        //         received: true,
-        //     })
-        //     .then(() => {
-        //         setInput('');
-        //     });
-        db.collection('messages').add({});
+        db.collection('chats').doc(chatId).collection('messages').add({
+            message: input,
+            name: user.displayName,
+            userId: user.uid,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+        setInput('');
     };
 
     return (
         <StyledMainChat>
             <div className='mainChat__header'>
-                <Avatar
-                    width='45px'
-                    height='45px'
-                    imgUrl='https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
-                />
+                <Avatar width='45px' height='45px' />
                 <div className='mainChat__header__info'>
                     <h2>{chatName}</h2>
                     <p className='mainChat__header__info__lastSeen'>Last seen at ...</p>
@@ -68,9 +71,9 @@ const MainChat = ({ messages, match }) => {
             </div>
 
             <div className='mainChat__body'>
-                {/* {messages.map((message) => (
+                {messages.map((message) => (
                     <Messages message={message} />
-                ))} */}
+                ))}
                 <div id='messagesEnd' style={{ visibility: 'hidden' }}></div>
             </div>
 

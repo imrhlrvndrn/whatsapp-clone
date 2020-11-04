@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
+import { useDataLayerValue } from '../../DataLayer';
 
 // Styled conponents
 import StyledSidebar from './StyledSidebar';
@@ -16,6 +17,7 @@ import SidebarChat from './SidebarChat/SidebarChat';
 
 const Sidebar = () => {
     const [rooms, setRooms] = useState([]);
+    const [{ user }, dispatch] = useDataLayerValue();
 
     useEffect(() => {
         const unsubscribe = db.collection('chats').onSnapshot((snapshot) => {
@@ -39,11 +41,7 @@ const Sidebar = () => {
     return (
         <StyledSidebar>
             <div className='sidebar__header'>
-                <Avatar
-                    width='45px'
-                    height='45px'
-                    imgUrl='https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
-                />
+                <Avatar width='45px' height='45px' imgUrl={user?.photoURL} />
                 <div className='sidebar__header__icons'>
                     <StoriesIcon />
                     <MessageIcon />
