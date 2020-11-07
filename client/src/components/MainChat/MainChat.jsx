@@ -22,7 +22,7 @@ const MainChat = ({ match }) => {
     const [{ user }, dispatch] = useDataLayerValue();
     const chatId = match.params.chatId;
     const [messages, setMessages] = useState([]);
-    const [chatName, setChatName] = useState('');
+    const [chatDetails, setChatDetails] = useState([]);
     const [input, setInput] = useState('');
 
     useEffect(() => {
@@ -30,7 +30,7 @@ const MainChat = ({ match }) => {
             db.collection('chats')
                 .doc(chatId)
                 .onSnapshot((snapshot) => {
-                    setChatName(snapshot?.data()?.name);
+                    setChatDetails([snapshot?.data()]);
                 });
 
             db.collection('chats')
@@ -58,9 +58,9 @@ const MainChat = ({ match }) => {
     return (
         <StyledMainChat>
             <div className='mainChat__header'>
-                <Avatar width='45px' height='45px' />
+                <Avatar width='45px' height='45px' imgUrl={chatDetails[0]?.photoURL} />
                 <div className='mainChat__header__info'>
-                    <h2>{chatName}</h2>
+                    <h2>{chatDetails[0]?.name}</h2>
                     <p className='mainChat__header__info__lastSeen'>
                         Last message on{' '}
                         {moment(

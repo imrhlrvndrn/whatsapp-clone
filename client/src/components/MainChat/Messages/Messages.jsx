@@ -25,7 +25,9 @@ const Messages = ({ message }) => {
             <p className='message'>{message?.message}</p>
             <div className='timestamp'>
                 <p>{moment(new Date(message?.timestamp?.toDate())).format('hh:mm A')}</p>
-                <ReadIcon fill='black' width='20px' height='20px' />
+                {message?.userId === user?.uid && (
+                    <ReadIcon fill='black' width='20px' height='20px' />
+                )}
             </div>
         </StyledMessages>
     );

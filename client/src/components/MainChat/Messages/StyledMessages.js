@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export default styled.div`
     margin-bottom: 0.3rem;
-    padding: 1rem;
+    padding: 0.5rem 1rem;
     background-color: rgb(${(props) => props.theme.lightestBackground});
     width: max-content;
     max-width: 50%;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import firebase from 'firebase';
 import { db } from '../../firebase';
 import { useDataLayerValue } from '../../DataLayer';
 
@@ -35,7 +36,15 @@ const Sidebar = () => {
     const createNewChat = () => {
         const newChatName = prompt('Enter a name for the new chat');
 
-        if (newChatName) db.collection('chats').add({ name: newChatName });
+        if (newChatName)
+            db.collection('chats').add({
+                name: newChatName,
+                owner: user.uid,
+                members: firebase.firestore.FieldValue.arrayUnion(user.uid),
+                admins: firebase.firestore.FieldValue.arrayUnion(user.uid),
+                photoURL: '',
+                description: '',
+            });
     };
 
     return (
@@ -60,12 +69,17 @@ const Sidebar = () => {
                 </div>
             </div>
             <div className='sidebarChat'>
-                <div className='addNewRoom' onClick={createNewChat}>
+                <div className='addNewChat  ' onClick={createNewChat}>
                     Start new chat
                 </div>
                 <SidebarChat />
                 {rooms?.map((room) => (
-                    <SidebarChat key={room.id} id={room.id} name={room.data.name} />
+                    <SidebarChat
+                        key={room?.id}
+                        id={room?.id}
+                        name={room?.data?.name}
+                        imgUrl={room?.data?.photoURL}
+                    />
                 ))}
             </div>
         </StyledSidebar>

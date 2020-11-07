@@ -1,5 +1,5 @@
 import React from 'react';
-import { auth, provider } from '../../firebase';
+import { auth, db, provider } from '../../firebase';
 import { useDataLayerValue } from '../../DataLayer';
 
 // styled-components
@@ -13,9 +13,35 @@ const Login = () => {
 
     const handleLogin = () => {
         auth.signInWithPopup(provider)
-            .then((user) => {
-                console.log(user.user);
-                dispatch({ type: 'SET_USER', user: user.user });
+            .then((data) => {
+                console.log('Google Auth user: ', data.user);
+
+                dispatch({
+                    type: 'SET_USER',
+                    user: {
+                        uid: data?.user?.uid,
+                        name: data?.user?.displayName,
+                        phoneNumber: data?.user?.phoneNumber,
+                        email: data?.user?.email,
+                        photoURL: data?.user?.photoURL,
+                    },
+                });
+            })
+            .then(() => {
+                db.collection('members')
+                    .where('uid', '==', `${user?.uid}`)
+                    .get()
+                    .then((response) => {
+                        console.log('DB response', response);
+
+                        db.collection('members').add({
+                            uid: user?.uid,
+                            name: user?.displayName,
+                            phoneNumber: user?.phoneNumber,
+                            email: user?.email,
+                            photoURL: user?.photoURL,
+                        });
+                    });
             })
             .catch((error) => alert(error.message));
     };

@@ -53,5 +53,11 @@ export default styled.div`
         background-color: rgb(${(props) => props.theme.lightestBackground});
         height: auto;
         overflow-y: auto;
+
+        .addNewChat {
+            padding: 2rem 1rem;
+            text-align: center;
+            background-color: rgba(${(props) => props.theme.constants.colorBackground}, 0.2);
+        }
     }
 `;
