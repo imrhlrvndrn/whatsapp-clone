@@ -6,7 +6,7 @@ const messageSchema = new Schema(
         privatedmid: { type: Schema.Types.ObjectId, ref: 'PrivateDm' },
         groupid: { type: Schema.Types.ObjectId, ref: 'Group' },
         userid: { type: Schema.Types.ObjectId, ref: 'User' },
-        forward_count: { type: Number, required: true },
+        forward_count: { type: Number, required: true, default: 0 },
         message: String,
         name: String,
         received: Boolean,

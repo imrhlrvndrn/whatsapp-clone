@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Pusher from 'pusher-js';
 import GlobalStyles from './styledcomponents/GlobalStyles';
 import { lightTheme, darkTheme } from './styledcomponents/Themes';
 import { ThemeProvider } from 'styled-components';
@@ -29,21 +28,7 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        const pusher = new Pusher('950a3be25fe26045eb39', {
-            cluster: 'ap2',
-        });
-
-        const channel = pusher.subscribe('messages');
-        channel.bind('inserted', (newMessage) => {
-            setMessages([...messages, newMessage]);
-        });
-
         localStorage.setItem('theme', themeState);
-
-        return () => {
-            channel.unbind_all();
-            channel.unsubscribe();
-        };
     }, [themeState, messages]);
 
     const toggleTheme = () => {

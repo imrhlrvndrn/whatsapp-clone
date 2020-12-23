@@ -5,7 +5,6 @@
   "dependencies": {
     "axios": "^0.20.0",
     "cra-template": "1.0.3",
-    "pusher-js": "^7.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
