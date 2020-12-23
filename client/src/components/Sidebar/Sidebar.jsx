@@ -21,14 +21,17 @@ const Sidebar = () => {
     const [{ user }, dispatch] = useDataLayerValue();
 
     useEffect(() => {
-        const unsubscribe = db.collection('chats').onSnapshot((snapshot) => {
-            setRooms(
-                snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    data: doc.data(),
-                }))
-            );
-        });
+        const unsubscribe = db
+            .collection('chats')
+            .where('members', 'array-contains', `${user?.uid}`)
+            .onSnapshot((snapshot) => {
+                setRooms(
+                    snapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        data: doc.data(),
+                    }))
+                );
+            });
 
         return () => unsubscribe();
     }, []);

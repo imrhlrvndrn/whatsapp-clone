@@ -23,6 +23,7 @@ const Login = () => {
                         name: data?.user?.displayName,
                         phoneNumber: data?.user?.phoneNumber,
                         email: data?.user?.email,
+                        email_is_verified: data?.user?.emailVerified,
                         photoURL: data?.user?.photoURL,
                     },
                 });

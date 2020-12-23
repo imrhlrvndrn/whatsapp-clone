@@ -66,7 +66,7 @@ const MainChat = ({ match }) => {
                     <p className='mainChat__header__info__lastSeen'>
                         Last message on{' '}
                         {moment(
-                            new Date(messages[messages.length - 1]?.timestamp?.toDate())
+                            new Date(messages[messages.length - 1]?.data?.timestamp?.toDate())
                         ).format('hh:mm A')}
                     </p>
                 </div>
