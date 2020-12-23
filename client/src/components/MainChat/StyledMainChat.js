@@ -68,6 +68,7 @@ export default styled.div`
 
     .mainChat__chatbarContainer {
         display: flex;
+        position: relative;
         align-items: center;
         padding: 0.5rem 1rem;
         background-color: rgb(${(props) => props.theme.mediumBackground});
@@ -95,6 +96,19 @@ export default styled.div`
                 color: rgb(${(props) => props.theme.constants.lightText});
                 background-color: rgb(${(props) => props.theme.constants.colorBackground});
             }
+        }
+
+        &__joinChatGroupButton {
+            cursor: pointer;
+            text-align: center;
+            position: absolute;
+            top: calc(-100% - 1rem);
+            left: 0;
+            padding: 1rem;
+            width: 100%;
+            height: calc(100% + 2rem);
+            background-color: rgb(${(props) => props.theme.constants.colorBackground});
+            color: white;
         }
     }
 `;

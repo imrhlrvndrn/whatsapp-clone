@@ -35,7 +35,7 @@ const MainApp = ({ messages }) => {
                 }
             }
         })();
-    }, []);
+    }, [user?.uid]);
 
     return (
         <StyledMainApp>

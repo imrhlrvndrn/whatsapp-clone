@@ -31,17 +31,36 @@ const MainChat = ({ match }) => {
                 .doc(chatId)
                 .onSnapshot((snapshot) => {
                     setChatDetails([snapshot?.data()]);
-                });
 
-            db.collection('chats')
-                .doc(chatId)
-                .collection('messages')
-                .orderBy('timestamp', 'asc')
-                .onSnapshot((snapshot) =>
-                    setMessages(snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })))
-                );
+                    if (snapshot?.data()?.members?.includes(user?.uid)) {
+                        db.collection('chats')
+                            .doc(chatId)
+                            .collection('messages')
+                            .orderBy('timestamp', 'asc')
+                            .onSnapshot((snapshot) =>
+                                setMessages(
+                                    snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }))
+                                )
+                            );
+                    }
+                });
         }
     }, [chatId]);
+
+    const joinChatGroup = () => {
+        if (chatDetails[0]?.members?.includes(user?.uid)) {
+            return;
+        } else {
+            db.collection('chats')
+                .doc(chatId)
+                .set(
+                    {
+                        members: [...chatDetails[0]?.members, user?.uid],
+                    },
+                    { merge: true }
+                );
+        }
+    };
 
     const sendMessage = (event) => {
         event.preventDefault();
@@ -56,19 +75,23 @@ const MainChat = ({ match }) => {
 
         setInput('');
     };
+    console.log(chatDetails);
 
+    // fetchChatMessages(chatId);
     return (
         <StyledMainChat>
             <div className='mainChat__header'>
                 <Avatar width='45px' height='45px' imgUrl={chatDetails[0]?.photoURL} />
                 <div className='mainChat__header__info'>
                     <h2>{chatDetails[0]?.name}</h2>
-                    <p className='mainChat__header__info__lastSeen'>
-                        Last message on{' '}
-                        {moment(
-                            new Date(messages[messages.length - 1]?.data?.timestamp?.toDate())
-                        ).format('hh:mm A')}
-                    </p>
+                    {messages.length > 0 && (
+                        <p className='mainChat__header__info__lastSeen'>
+                            Last message on{' '}
+                            {moment(
+                                new Date(messages[messages.length - 1]?.data?.timestamp?.toDate())
+                            ).format('hh:mm A')}
+                        </p>
+                    )}
                 </div>
                 <div className='mainChat__header__icons'>
                     {/* <AttachmentIcon /> */}
@@ -85,21 +108,32 @@ const MainChat = ({ match }) => {
             </div>
 
             <div className='mainChat__chatbarContainer'>
-                <SmileIcon />
-                <form className='mainChat__chatbarContainer__chatForm'>
-                    <input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        type='text'
-                        name='chatbarInput'
-                        id='chatbarInput'
-                        placeholder='Type a message'
-                    />
-                    <button onClick={sendMessage} type='submit'>
-                        Send a message
-                    </button>
-                </form>
-                <MicIcon />
+                {messages.length > 0 ? (
+                    <>
+                        <SmileIcon />
+                        <form className='mainChat__chatbarContainer__chatForm'>
+                            <input
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                type='text'
+                                name='chatbarInput'
+                                id='chatbarInput'
+                                placeholder='Type a message'
+                            />
+                            <button onClick={sendMessage} type='submit'>
+                                Send a message
+                            </button>
+                        </form>
+                        <MicIcon />
+                    </>
+                ) : (
+                    <div
+                        className='mainChat__chatbarContainer__joinChatGroupButton'
+                        onClick={joinChatGroup}
+                    >
+                        Join Group
+                    </div>
+                )}
             </div>
         </StyledMainChat>
     );
