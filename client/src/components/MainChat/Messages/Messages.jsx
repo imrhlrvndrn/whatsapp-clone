@@ -19,12 +19,12 @@ const Messages = ({ message }) => {
     return (
         <StyledMessages
             read={read}
-            className={`${message?.userId === user?.uid && 'chat__receiver'}`}
+            className={`${message?.data?.userId === user?.uid && 'chat__receiver'}`}
         >
-            <p className='userName'>{message?.name}</p>
-            <p className='message'>{message?.message}</p>
+            <p className='userName'>{message?.data?.name}</p>
+            <p className='message'>{message?.data?.message}</p>
             <div className='timestamp'>
-                <p>{moment(new Date(message?.timestamp?.toDate())).format('hh:mm A')}</p>
+                <p>{moment(new Date(message?.data?.timestamp?.toDate())).format('hh:mm A')}</p>
                 {message?.userId === user?.uid && (
                     <ReadIcon fill='black' width='20px' height='20px' />
                 )}

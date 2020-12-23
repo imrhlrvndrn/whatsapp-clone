@@ -26,22 +26,8 @@ const Login = () => {
                         photoURL: data?.user?.photoURL,
                     },
                 });
-            })
-            .then(() => {
-                db.collection('members')
-                    .where('uid', '==', `${user?.uid}`)
-                    .get()
-                    .then((response) => {
-                        console.log('DB response', response);
 
-                        db.collection('members').add({
-                            uid: user?.uid,
-                            name: user?.displayName,
-                            phoneNumber: user?.phoneNumber,
-                            email: user?.email,
-                            photoURL: user?.photoURL,
-                        });
-                    });
+                return user;
             })
             .catch((error) => alert(error.message));
     };

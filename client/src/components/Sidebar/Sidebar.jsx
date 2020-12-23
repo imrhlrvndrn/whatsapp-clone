@@ -69,7 +69,7 @@ const Sidebar = () => {
                 </div>
             </div>
             <div className='sidebarChat'>
-                <div className='addNewChat  ' onClick={createNewChat}>
+                <div className='addNewChat' onClick={createNewChat}>
                     Start new chat
                 </div>
                 <SidebarChat />

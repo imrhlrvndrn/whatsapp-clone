@@ -37,7 +37,9 @@ const MainChat = ({ match }) => {
                 .doc(chatId)
                 .collection('messages')
                 .orderBy('timestamp', 'asc')
-                .onSnapshot((snapshot) => setMessages(snapshot.docs.map((doc) => doc.data())));
+                .onSnapshot((snapshot) =>
+                    setMessages(snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })))
+                );
         }
     }, [chatId]);
 
@@ -47,8 +49,8 @@ const MainChat = ({ match }) => {
 
         db.collection('chats').doc(chatId).collection('messages').add({
             message: input,
-            name: user.displayName,
-            userId: user.uid,
+            name: user?.name,
+            userId: user?.uid,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         });
 
