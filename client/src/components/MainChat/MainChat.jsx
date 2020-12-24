@@ -19,43 +19,95 @@ import Avatar from '../Avatar/Avatar';
 import Messages from './Messages/Messages';
 
 const MainChat = ({ match }) => {
-    const [{ user }, dispatch] = useDataLayerValue();
+    const [{ user, chatDetails, messages, chatInfo }, dispatch] = useDataLayerValue();
     const chatId = match.params.chatId;
-    const [messages, setMessages] = useState([]);
-    const [chatDetails, setChatDetails] = useState([]);
+    const [chatOptionsModal, setChatOptionsModal] = useState(false);
     const [input, setInput] = useState('');
+    const [isMember, setIsMember] = useState(false);
 
     useEffect(() => {
         if (chatId) {
-            db.collection('chats')
+            let snapshotData = {};
+            const unsubscribe = db
+                .collection('chats')
                 .doc(chatId)
-                .onSnapshot((snapshot) => {
-                    setChatDetails([snapshot?.data()]);
+                .onSnapshot(async (snapshot) => {
+                    // Check if the chat is a DM or a Group
+                    if (snapshot?.data()?.members.length === 2) {
+                        const chatMember = snapshot
+                            ?.data()
+                            ?.members.filter((member) => member?.memberId !== user?.uid);
 
-                    if (snapshot?.data()?.members?.includes(user?.uid)) {
+                        const fetchMember = async () => {
+                            const fetchedMember = await db
+                                .collection('members')
+                                .doc(chatMember[0]?.memberId)
+                                .get();
+
+                            snapshotData = {
+                                ...snapshot?.data(),
+                                photoURL: fetchedMember?.data()?.photoURL,
+                                name: fetchedMember?.data()?.name,
+                            };
+                            console.log('Members data: ', fetchedMember?.data());
+                            console.log('Constructed snapshot data: ', snapshotData);
+                        };
+
+                        await fetchMember();
+                    } else {
+                        snapshotData = snapshot?.data();
+                    }
+
+                    console.log('Snapshot data: ', snapshotData);
+
+                    dispatch({ type: 'SET_CHAT_DETAILS', chatDetails: snapshotData });
+                    dispatch({ type: 'SET_CHAT_MESSAGES', messages: [] });
+
+                    // Check if the logged in user is a member of the chat
+                    let isMemberOfChat = snapshot
+                        ?.data()
+                        ?.members?.filter((member) => member?.memberId === user?.uid);
+
+                    console.log(isMemberOfChat.length);
+
+                    if (isMemberOfChat?.length >= 1) {
+                        setIsMember(true);
                         db.collection('chats')
                             .doc(chatId)
                             .collection('messages')
-                            .orderBy('timestamp', 'asc')
-                            .onSnapshot((snapshot) =>
-                                setMessages(
-                                    snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }))
-                                )
+                            .orderBy('timestamp', 'desc')
+                            .limit(4)
+                            .onSnapshot((messageSnapshot) =>
+                                dispatch({
+                                    type: 'SET_CHAT_MESSAGES',
+                                    messages: messageSnapshot.docs
+                                        .map((doc) => ({
+                                            id: doc.id,
+                                            data: doc.data(),
+                                        }))
+                                        .reverse(),
+                                })
                             );
+                    } else {
+                        setIsMember(false);
                     }
                 });
+
+            return () => unsubscribe();
         }
     }, [chatId]);
 
     const joinChatGroup = () => {
-        if (chatDetails[0]?.members?.includes(user?.uid)) {
+        if (chatDetails === undefined) return;
+        let memberExists = chatDetails?.members?.filter((member) => member?.memberId === user?.uid);
+        if (memberExists.length > 0) {
             return;
         } else {
             db.collection('chats')
                 .doc(chatId)
                 .set(
                     {
-                        members: [...chatDetails[0]?.members, user?.uid],
+                        members: [...chatDetails?.members, { memberId: user?.uid, roles: [] }],
                     },
                     { merge: true }
                 );
@@ -78,12 +130,13 @@ const MainChat = ({ match }) => {
     console.log(chatDetails);
 
     // fetchChatMessages(chatId);
+    console.log('chatId: ', chatId);
     return (
-        <StyledMainChat>
+        <StyledMainChat chatInfo={chatInfo}>
             <div className='mainChat__header'>
-                <Avatar width='45px' height='45px' imgUrl={chatDetails[0]?.photoURL} />
+                <Avatar width='45px' height='45px' imgUrl={chatDetails?.photoURL} />
                 <div className='mainChat__header__info'>
-                    <h2>{chatDetails[0]?.name}</h2>
+                    <h2>{chatDetails?.name}</h2>
                     {messages.length > 0 && (
                         <p className='mainChat__header__info__lastSeen'>
                             Last message on{' '}
@@ -96,7 +149,34 @@ const MainChat = ({ match }) => {
                 <div className='mainChat__header__icons'>
                     {/* <AttachmentIcon /> */}
                     <SearchIcon />
-                    <MoreOptionsIcon />
+                    <div onClick={() => setChatOptionsModal(!chatOptionsModal)}>
+                        <MoreOptionsIcon />
+                    </div>
+                    {chatOptionsModal && (
+                        <div className='chatOptionsModal'>
+                            <span
+                                onClick={() => {
+                                    setChatOptionsModal(false);
+                                    dispatch({ type: 'SET_CHAT_INFO', chatInfo: !chatInfo });
+                                }}
+                                className='chatOptionsModal__options'
+                            >
+                                {chatDetails?.members?.length > 2 ? 'Group info' : 'User info'}
+                            </span>
+                            <span
+                                onClick={() => setChatOptionsModal(false)}
+                                className='chatOptionsModal__options'
+                            >
+                                Clear messages
+                            </span>
+                            <span
+                                onClick={() => setChatOptionsModal(false)}
+                                className='chatOptionsModal__options'
+                            >
+                                {chatDetails?.members?.length > 2 ? 'Exit group' : 'Delete chat'}
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -108,7 +188,7 @@ const MainChat = ({ match }) => {
             </div>
 
             <div className='mainChat__chatbarContainer'>
-                {messages.length > 0 ? (
+                {isMember ? (
                     <>
                         <SmileIcon />
                         <form className='mainChat__chatbarContainer__chatForm'>
@@ -127,12 +207,13 @@ const MainChat = ({ match }) => {
                         <MicIcon />
                     </>
                 ) : (
-                    <div
+                    <button
+                        disabled={chatId === undefined}
                         className='mainChat__chatbarContainer__joinChatGroupButton'
                         onClick={joinChatGroup}
                     >
                         Join Group
-                    </div>
+                    </button>
                 )}
             </div>
         </StyledMainChat>

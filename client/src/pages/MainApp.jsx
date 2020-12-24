@@ -10,9 +10,10 @@ import StyledMainApp from './StyledMainApp';
 import Sidebar from '../components/Sidebar/Sidebar';
 import MainChat from '../components/MainChat/MainChat';
 import Login from './Login/Login';
+import ChatInfo from '../components/ChatInfo/ChatInfo';
 
 const MainApp = ({ messages }) => {
-    const [{ user }, dispatch] = useDataLayerValue();
+    const [{ user, chatInfo }, dispatch] = useDataLayerValue();
 
     useEffect(() => {
         (async () => {
@@ -27,6 +28,9 @@ const MainApp = ({ messages }) => {
                             email: user?.email,
                             email_is_verified: user?.email_is_verified,
                             photoURL: user?.photoURL,
+                            bio: '',
+                            groups: [],
+                            contacts: [],
                         },
                         { merge: true }
                     );
@@ -44,6 +48,7 @@ const MainApp = ({ messages }) => {
                     <Router>
                         <Sidebar />
                         <Route exact path='/chats/:chatId' component={MainChat} />
+                        {chatInfo && <ChatInfo />}
                     </Router>
                 </div>
             ) : (

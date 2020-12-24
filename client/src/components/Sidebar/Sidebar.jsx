@@ -17,20 +17,52 @@ import SearchIcon from '../../React icons/SearchIcon';
 import SidebarChat from './SidebarChat/SidebarChat';
 
 const Sidebar = () => {
-    const [rooms, setRooms] = useState([]);
-    const [{ user }, dispatch] = useDataLayerValue();
+    const [{ user, chatRooms }, dispatch] = useDataLayerValue();
 
     useEffect(() => {
         const unsubscribe = db
             .collection('chats')
-            .where('members', 'array-contains', `${user?.uid}`)
+            .where('members[memberId]', '==', `${user?.uid}`)
             .onSnapshot((snapshot) => {
-                setRooms(
-                    snapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        data: doc.data(),
-                    }))
-                );
+                snapshot.docs.map(async (doc) => {
+                    let snapshotData;
+                    // Check if the chat is a DM or a Group
+                    if (doc?.data()?.members.length === 2) {
+                        const chatMember = doc
+                            ?.data()
+                            ?.members.filter((member) => member?.memberId !== user?.uid);
+
+                        const fetchMember = async () => {
+                            const fetchedMember = await db
+                                .collection('members')
+                                .doc(chatMember[0]?.memberId)
+                                .get();
+
+                            snapshotData = {
+                                ...doc?.data(),
+                                photoURL: fetchedMember.data()?.photoURL,
+                                name: fetchedMember?.data()?.name,
+                            };
+                            console.log('Members data: ', fetchedMember?.data());
+                            console.log('Constructed snapshot data: ', snapshotData);
+                        };
+
+                        await fetchMember();
+                    } else {
+                        snapshotData = doc?.data();
+                    }
+
+                    dispatch({
+                        type: 'SET_CHAT_ROOMS',
+                        chatRooms: [
+                            ...chatRooms,
+                            {
+                                id: doc.id,
+                                data: snapshotData,
+                            },
+                        ],
+                    });
+                });
             });
 
         return () => unsubscribe();
@@ -42,9 +74,8 @@ const Sidebar = () => {
         if (newChatName)
             db.collection('chats').add({
                 name: newChatName,
-                owner: user.uid,
-                members: firebase.firestore.FieldValue.arrayUnion(user.uid),
-                admins: firebase.firestore.FieldValue.arrayUnion(user.uid),
+                owner: user?.uid,
+                members: [{ memberId: user?.uid, roles: [] }],
                 photoURL: '',
                 description: '',
             });
@@ -76,7 +107,7 @@ const Sidebar = () => {
                     Start new chat
                 </div>
                 <SidebarChat />
-                {rooms?.map((room) => (
+                {chatRooms?.map((room) => (
                     <SidebarChat
                         key={room?.id}
                         id={room?.id}
