@@ -1,14 +1,14 @@
 export const initialState = {
-    user: null,
-    // user: {
-    //     email: 'ricksondm18@gmail.com',
-    //     email_is_verified: true,
-    //     name: 'Rahul Ravindran',
-    //     phoneNumber: null,
-    //     photoURL:
-    //         'https://lh3.googleusercontent.com/a-/AOh14GgIsTRv4qVrjbFx0gUxDd3adq9N7sGco9jJSApYI5k=s96-c',
-    //     uid: 'kMLDPLPkzLbSh1d4nh9DmrzWN703',
-    // },
+    // user: null,
+    user: {
+        email: 'ricksondm18@gmail.com',
+        email_is_verified: true,
+        name: 'Rahul Ravindran',
+        phoneNumber: null,
+        photoURL:
+            'https://lh3.googleusercontent.com/a-/AOh14GgIsTRv4qVrjbFx0gUxDd3adq9N7sGco9jJSApYI5k=s96-c',
+        uid: 'kMLDPLPkzLbSh1d4nh9DmrzWN703',
+    },
     // user: {
     //     email: 'rahulr1116@gmail.com',
     //     email_is_verified: true,
@@ -22,6 +22,7 @@ export const initialState = {
     chatDetails: {},
     messages: [],
     chatInfo: true,
+    chatInfoMember: {},
 };
 
 const reducer = (state, action) => {
@@ -42,6 +43,9 @@ const reducer = (state, action) => {
 
         case 'SET_CHAT_INFO':
             return { ...state, chatInfo: action.chatInfo };
+
+        case 'SET_CHAT_INFO_MEMBER':
+            return { ...state, chatInfoMember: action.chatInfoMember };
 
         default:
             return state;

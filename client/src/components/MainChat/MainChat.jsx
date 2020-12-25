@@ -24,6 +24,7 @@ const MainChat = ({ match }) => {
     const [chatOptionsModal, setChatOptionsModal] = useState(false);
     const [input, setInput] = useState('');
     const [isMember, setIsMember] = useState(false);
+    const [isBlocked, setIsBlocked] = useState(false);
 
     useEffect(() => {
         if (chatId) {
@@ -33,16 +34,33 @@ const MainChat = ({ match }) => {
                 .doc(chatId)
                 .onSnapshot(async (snapshot) => {
                     // Check if the chat is a DM or a Group
-                    if (snapshot?.data()?.members.length === 2) {
-                        const chatMember = snapshot
-                            ?.data()
-                            ?.members.filter((member) => member?.memberId !== user?.uid);
+                    if (snapshot?.data()?.members.length <= 2) {
+                        const chatMember = snapshot?.data()?.members.filter((member) => {
+                            if (snapshot?.data()?.members?.length === 1) {
+                                if (snapshot?.data()?.members[0] !== user?.uid)
+                                    return member !== user?.uid;
+                                else return member === user?.uid;
+                            } else return member !== user?.uid;
+                        });
 
                         const fetchMember = async () => {
                             const fetchedMember = await db
                                 .collection('members')
-                                .doc(chatMember[0]?.memberId)
+                                .doc(chatMember[0])
                                 .get();
+
+                            if (fetchedMember?.data()?.blocked_contacts?.includes(user?.uid)) {
+                                console.log("You're blocked");
+                                setIsBlocked(true);
+                            }
+
+                            dispatch({
+                                type: 'SET_CHAT_INFO_MEMBER',
+                                chatInfoMember: {
+                                    memberId: fetchedMember?.id,
+                                    ...fetchedMember?.data(),
+                                },
+                            });
 
                             snapshotData = {
                                 ...snapshot?.data(),
@@ -60,17 +78,14 @@ const MainChat = ({ match }) => {
 
                     console.log('Snapshot data: ', snapshotData);
 
-                    dispatch({ type: 'SET_CHAT_DETAILS', chatDetails: snapshotData });
+                    dispatch({
+                        type: 'SET_CHAT_DETAILS',
+                        chatDetails: { id: snapshot?.id, ...snapshotData },
+                    });
                     dispatch({ type: 'SET_CHAT_MESSAGES', messages: [] });
 
-                    // Check if the logged in user is a member of the chat
-                    let isMemberOfChat = snapshot
-                        ?.data()
-                        ?.members?.filter((member) => member?.memberId === user?.uid);
-
-                    console.log(isMemberOfChat.length);
-
-                    if (isMemberOfChat?.length >= 1) {
+                    if (snapshot?.data()?.members?.includes(user?.uid)) {
+                        // Check if the logged in user is a member of the chat
                         setIsMember(true);
                         db.collection('chats')
                             .doc(chatId)
@@ -96,18 +111,19 @@ const MainChat = ({ match }) => {
             return () => unsubscribe();
         }
     }, [chatId]);
+    console.log('cahtINfo for undefined check: ', chatDetails);
 
     const joinChatGroup = () => {
-        if (chatDetails === undefined) return;
-        let memberExists = chatDetails?.members?.filter((member) => member?.memberId === user?.uid);
-        if (memberExists.length > 0) {
+        if (chatDetails === {}) return;
+        if (chatDetails?.members?.includes(user?.uid)) {
             return;
         } else {
             db.collection('chats')
                 .doc(chatId)
                 .set(
                     {
-                        members: [...chatDetails?.members, { memberId: user?.uid, roles: [] }],
+                        members: [...chatDetails?.members, user?.uid],
+                        roles: { ...chatDetails?.roles, [`${user?.uid}`]: ['member'] },
                     },
                     { merge: true }
                 );
@@ -129,7 +145,6 @@ const MainChat = ({ match }) => {
     };
     console.log(chatDetails);
 
-    // fetchChatMessages(chatId);
     console.log('chatId: ', chatId);
     return (
         <StyledMainChat chatInfo={chatInfo}>
@@ -164,6 +179,17 @@ const MainChat = ({ match }) => {
                                 {chatDetails?.members?.length > 2 ? 'Group info' : 'User info'}
                             </span>
                             <span
+                                onClick={() => {
+                                    navigator.clipboard.writeText(
+                                        `http://localhost:3000/chats/${chatId}`
+                                    );
+                                    setChatOptionsModal(false);
+                                }}
+                                className='chatOptionsModal__options'
+                            >
+                                Invite link
+                            </span>
+                            <span
                                 onClick={() => setChatOptionsModal(false)}
                                 className='chatOptionsModal__options'
                             >
@@ -187,35 +213,41 @@ const MainChat = ({ match }) => {
                 <div id='messagesEnd' style={{ visibility: 'hidden' }}></div>
             </div>
 
-            <div className='mainChat__chatbarContainer'>
-                {isMember ? (
-                    <>
-                        <SmileIcon />
-                        <form className='mainChat__chatbarContainer__chatForm'>
-                            <input
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                type='text'
-                                name='chatbarInput'
-                                id='chatbarInput'
-                                placeholder='Type a message'
-                            />
-                            <button onClick={sendMessage} type='submit'>
-                                Send a message
-                            </button>
-                        </form>
-                        <MicIcon />
-                    </>
-                ) : (
-                    <button
-                        disabled={chatId === undefined}
-                        className='mainChat__chatbarContainer__joinChatGroupButton'
-                        onClick={joinChatGroup}
-                    >
-                        Join Group
-                    </button>
-                )}
-            </div>
+            {chatDetails?.name && (
+                <div className='mainChat__chatbarContainer'>
+                    {isMember ? (
+                        <>
+                            <SmileIcon />
+                            <form className='mainChat__chatbarContainer__chatForm'>
+                                <input
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    type='text'
+                                    name='chatbarInput'
+                                    id='chatbarInput'
+                                    placeholder='Type a message'
+                                />
+                                <button onClick={sendMessage} type='submit'>
+                                    Send a message
+                                </button>
+                            </form>
+                            <MicIcon />
+                        </>
+                    ) : (
+                        <button
+                            disabled={chatId === undefined}
+                            className='mainChat__chatbarContainer__joinChatGroupButton'
+                            onClick={!isBlocked ? joinChatGroup : null}
+                        >
+                            {isBlocked
+                                ? "You can't send messages in this chat anymore"
+                                : chatDetails?.members?.length > 2
+                                ? 'Join Group'
+                                : 'Join Chat'}
+                        </button>
+                    )}
+                </div>
+            )}
         </StyledMainChat>
     );
 };

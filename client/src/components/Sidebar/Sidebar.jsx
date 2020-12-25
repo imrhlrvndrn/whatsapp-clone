@@ -17,25 +17,29 @@ import SearchIcon from '../../React icons/SearchIcon';
 import SidebarChat from './SidebarChat/SidebarChat';
 
 const Sidebar = () => {
-    const [{ user, chatRooms }, dispatch] = useDataLayerValue();
+    const [{ user, chatRooms, chatInfo }, dispatch] = useDataLayerValue();
 
     useEffect(() => {
         const unsubscribe = db
             .collection('chats')
-            .where('members[memberId]', '==', `${user?.uid}`)
+            .where('members', 'array-contains', `${user?.uid}`)
             .onSnapshot((snapshot) => {
                 snapshot.docs.map(async (doc) => {
                     let snapshotData;
                     // Check if the chat is a DM or a Group
-                    if (doc?.data()?.members.length === 2) {
-                        const chatMember = doc
-                            ?.data()
-                            ?.members.filter((member) => member?.memberId !== user?.uid);
+                    if (doc?.data()?.members.length <= 2) {
+                        const chatMember = doc?.data()?.members.filter((member) => {
+                            if (doc?.data()?.members?.length === 1) {
+                                if (doc?.data()?.members[0] !== user?.uid)
+                                    return member !== user?.uid;
+                                else return member === user?.uid;
+                            } else return member !== user?.uid;
+                        });
 
                         const fetchMember = async () => {
                             const fetchedMember = await db
                                 .collection('members')
-                                .doc(chatMember[0]?.memberId)
+                                .doc(chatMember[0])
                                 .get();
 
                             snapshotData = {
@@ -75,14 +79,15 @@ const Sidebar = () => {
             db.collection('chats').add({
                 name: newChatName,
                 owner: user?.uid,
-                members: [{ memberId: user?.uid, roles: [] }],
+                members: [user?.uid],
+                roles: { [`${user?.uid}`]: ['admin', 'owner', 'member'] },
                 photoURL: '',
                 description: '',
             });
     };
 
     return (
-        <StyledSidebar>
+        <StyledSidebar chatInfo={chatInfo}>
             <div className='sidebar__header'>
                 <Avatar width='45px' height='45px' imgUrl={user?.photoURL} />
                 <div className='sidebar__header__icons'>

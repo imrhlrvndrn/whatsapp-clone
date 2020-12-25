@@ -4,14 +4,18 @@ export default styled.div`
     width: 25%;
     /* display: flex; */
     /* flex-direction: column; */
+    overflow-y: scroll;
+    background-color: rgb(${(props) => props.theme.mediumBackground});
 
     .chat_info_header {
+        top: 0;
+        position: sticky;
         display: flex;
         height: 81px;
         align-items: center;
         padding: 0 1rem;
-        background-color: rgb(${(props) => props.theme.mediumBackground});
         border-left: 1px solid white;
+        background-color: rgb(${(props) => props.theme.mediumBackground});
 
         svg {
             cursor: pointer;
@@ -25,7 +29,7 @@ export default styled.div`
 
         img {
             display: block;
-            margin: 0 auto;
+            margin: 0 auto 2rem auto;
             width: 200px;
             height: 200px;
             border-radius: 50%;

@@ -29,13 +29,24 @@ const MainApp = ({ messages }) => {
                             email_is_verified: user?.email_is_verified,
                             photoURL: user?.photoURL,
                             bio: '',
-                            groups: [],
                             contacts: [],
                         },
                         { merge: true }
                     );
 
                     console.log(`New member(${user?.name}: ${user?.email}) added to the DB`);
+                } else {
+                    dispatch({
+                        type: 'SET_USER',
+                        user: {
+                            ...user,
+                            bio: memberDoc?.data()?.bio,
+                            contacts: [...memberDoc?.data()?.contacts],
+                            blocked_contacts: memberDoc?.data()?.blocked_contacts
+                                ? [...memberDoc?.data()?.blocked_contacts]
+                                : [],
+                        },
+                    });
                 }
             }
         })();
