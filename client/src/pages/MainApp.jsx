@@ -17,12 +17,13 @@ const MainApp = ({ messages }) => {
 
     useEffect(() => {
         (async () => {
-            if (user?.uid) {
-                const memberDoc = await db.collection('members').doc(user?.uid).get();
+            if (user?.userId) {
+                const memberDoc = await db.collection('members').doc(user?.userId).get();
 
                 if (!memberDoc.exists) {
-                    db.collection('members').doc(`${user?.uid}`).set(
+                    db.collection('members').doc(`${user?.userId}`).set(
                         {
+                            userId: user?.userId,
                             name: user?.name,
                             phoneNumber: user?.phoneNumber,
                             email: user?.email,
@@ -30,6 +31,7 @@ const MainApp = ({ messages }) => {
                             photoURL: user?.photoURL,
                             bio: '',
                             contacts: [],
+                            blocked_contacts: [],
                         },
                         { merge: true }
                     );
@@ -39,18 +41,13 @@ const MainApp = ({ messages }) => {
                     dispatch({
                         type: 'SET_USER',
                         user: {
-                            ...user,
-                            bio: memberDoc?.data()?.bio,
-                            contacts: [...memberDoc?.data()?.contacts],
-                            blocked_contacts: memberDoc?.data()?.blocked_contacts
-                                ? [...memberDoc?.data()?.blocked_contacts]
-                                : [],
+                            ...memberDoc?.data(),
                         },
                     });
                 }
             }
         })();
-    }, [user?.uid]);
+    }, [user?.userId]);
 
     return (
         <StyledMainApp>

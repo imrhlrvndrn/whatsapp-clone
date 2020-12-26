@@ -7,7 +7,7 @@ export const initialState = {
         phoneNumber: null,
         photoURL:
             'https://lh3.googleusercontent.com/a-/AOh14GgIsTRv4qVrjbFx0gUxDd3adq9N7sGco9jJSApYI5k=s96-c',
-        uid: 'kMLDPLPkzLbSh1d4nh9DmrzWN703',
+        userId: 'kMLDPLPkzLbSh1d4nh9DmrzWN703',
     },
     // user: {
     //     email: 'rahulr1116@gmail.com',
@@ -16,13 +16,13 @@ export const initialState = {
     //     phoneNumber: null,
     //     photoURL:
     //         'https://lh3.googleusercontent.com/a-/AOh14GiB6slrfXw0f0TBCgI2HTGJbQ0SqI3vazK8F96E=s96-c',
-    //     uid: 'BNKn2NzBwqS0SgL3GLdlY3gI4d32',
+    //     userId: 'BNKn2NzBwqS0SgL3GLdlY3gI4d32',
     // },
     chatRooms: [],
     chatDetails: {},
+    chatInfoMember: {},
     messages: [],
     chatInfo: true,
-    chatInfoMember: {},
 };
 
 const reducer = (state, action) => {
@@ -38,14 +38,14 @@ const reducer = (state, action) => {
         case 'SET_CHAT_DETAILS':
             return { ...state, chatDetails: action.chatDetails };
 
+        case 'SET_CHAT_INFO_MEMBER':
+            return { ...state, chatInfoMember: action.chatInfoMember };
+
         case 'SET_CHAT_MESSAGES':
             return { ...state, messages: action.messages };
 
         case 'SET_CHAT_INFO':
             return { ...state, chatInfo: action.chatInfo };
-
-        case 'SET_CHAT_INFO_MEMBER':
-            return { ...state, chatInfoMember: action.chatInfoMember };
 
         default:
             return state;

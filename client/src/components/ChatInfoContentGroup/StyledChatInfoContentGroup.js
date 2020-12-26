@@ -22,11 +22,27 @@ export default styled.div`
 
         p {
             width: 90%;
+            display: block;
         }
 
         &_participants {
+            display: flex;
+            align-items: center;
             padding: 1rem 0;
             border-bottom: 1px solid rgb(${(props) => props.theme.mediumBackground});
+
+            img {
+                width: 40px;
+                height: 40px;
+                object-fit: contain;
+                border-radius: 50%;
+                margin: 0 0.5rem 0 0;
+            }
+
+            p {
+                font-size: 0.8rem;
+                font-weight: 600;
+            }
         }
     }
 

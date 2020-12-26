@@ -22,7 +22,7 @@ const Sidebar = () => {
     useEffect(() => {
         const unsubscribe = db
             .collection('chats')
-            .where('members', 'array-contains', `${user?.uid}`)
+            .where('members', 'array-contains', `${user?.userId}`)
             .onSnapshot((snapshot) => {
                 snapshot.docs.map(async (doc) => {
                     let snapshotData;
@@ -30,10 +30,10 @@ const Sidebar = () => {
                     if (doc?.data()?.members.length <= 2) {
                         const chatMember = doc?.data()?.members.filter((member) => {
                             if (doc?.data()?.members?.length === 1) {
-                                if (doc?.data()?.members[0] !== user?.uid)
-                                    return member !== user?.uid;
-                                else return member === user?.uid;
-                            } else return member !== user?.uid;
+                                if (doc?.data()?.members[0] !== user?.userId)
+                                    return member !== user?.userId;
+                                else return member === user?.userId;
+                            } else return member !== user?.userId;
                         });
 
                         const fetchMember = async () => {
@@ -78,9 +78,9 @@ const Sidebar = () => {
         if (newChatName)
             db.collection('chats').add({
                 name: newChatName,
-                owner: user?.uid,
-                members: [user?.uid],
-                roles: { [`${user?.uid}`]: ['admin', 'owner', 'member'] },
+                owner: user?.userId,
+                members: [user?.userId],
+                roles: { [`${user?.userId}`]: ['admin', 'owner', 'member'] },
                 photoURL: '',
                 description: '',
             });

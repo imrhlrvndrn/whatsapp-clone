@@ -37,10 +37,10 @@ const MainChat = ({ match }) => {
                     if (snapshot?.data()?.members.length <= 2) {
                         const chatMember = snapshot?.data()?.members.filter((member) => {
                             if (snapshot?.data()?.members?.length === 1) {
-                                if (snapshot?.data()?.members[0] !== user?.uid)
-                                    return member !== user?.uid;
-                                else return member === user?.uid;
-                            } else return member !== user?.uid;
+                                if (snapshot?.data()?.members[0] !== user?.userId)
+                                    return member !== user?.userId;
+                                else return member === user?.userId;
+                            } else return member !== user?.userId;
                         });
 
                         const fetchMember = async () => {
@@ -49,9 +49,11 @@ const MainChat = ({ match }) => {
                                 .doc(chatMember[0])
                                 .get();
 
-                            if (fetchedMember?.data()?.blocked_contacts?.includes(user?.uid)) {
+                            if (fetchedMember?.data()?.blocked_contacts?.includes(user?.userId)) {
                                 console.log("You're blocked");
                                 setIsBlocked(true);
+                            } else {
+                                setIsBlocked(false);
                             }
 
                             dispatch({
@@ -84,7 +86,7 @@ const MainChat = ({ match }) => {
                     });
                     dispatch({ type: 'SET_CHAT_MESSAGES', messages: [] });
 
-                    if (snapshot?.data()?.members?.includes(user?.uid)) {
+                    if (snapshot?.data()?.members?.includes(user?.userId)) {
                         // Check if the logged in user is a member of the chat
                         setIsMember(true);
                         db.collection('chats')
@@ -115,15 +117,15 @@ const MainChat = ({ match }) => {
 
     const joinChatGroup = () => {
         if (chatDetails === {}) return;
-        if (chatDetails?.members?.includes(user?.uid)) {
+        if (chatDetails?.members?.includes(user?.userId)) {
             return;
         } else {
             db.collection('chats')
                 .doc(chatId)
                 .set(
                     {
-                        members: [...chatDetails?.members, user?.uid],
-                        roles: { ...chatDetails?.roles, [`${user?.uid}`]: ['member'] },
+                        members: [...chatDetails?.members, user?.userId],
+                        roles: { ...chatDetails?.roles, [`${user?.userId}`]: ['member'] },
                     },
                     { merge: true }
                 );
@@ -137,7 +139,7 @@ const MainChat = ({ match }) => {
         db.collection('chats').doc(chatId).collection('messages').add({
             message: input,
             name: user?.name,
-            userId: user?.uid,
+            userId: user?.userId,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         });
 
@@ -215,7 +217,7 @@ const MainChat = ({ match }) => {
 
             {chatDetails?.name && (
                 <div className='mainChat__chatbarContainer'>
-                    {isMember ? (
+                    {isMember && !isBlocked ? (
                         <>
                             <SmileIcon />
                             <form className='mainChat__chatbarContainer__chatForm'>
@@ -238,6 +240,7 @@ const MainChat = ({ match }) => {
                             disabled={chatId === undefined}
                             className='mainChat__chatbarContainer__joinChatGroupButton'
                             onClick={!isBlocked ? joinChatGroup : null}
+                            style={{ backgroundColor: isBlocked && 'rgb(255, 14, 87)' }}
                         >
                             {isBlocked
                                 ? "You can't send messages in this chat anymore"

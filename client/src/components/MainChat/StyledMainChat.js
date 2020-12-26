@@ -41,6 +41,7 @@ export default styled.div`
                 top: calc(100% + 1.6rem);
                 right: 0;
                 width: max-content;
+                z-index: 5;
 
                 &__options {
                     display: block;
