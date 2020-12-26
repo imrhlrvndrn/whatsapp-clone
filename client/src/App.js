@@ -7,7 +7,7 @@ import { ThemeProvider } from 'styled-components';
 import MainApp from './pages/MainApp';
 
 const App = () => {
-    const [themeState, setThemeState] = useState('light');
+    const [themeState, setThemeState] = useState('dark');
     const theme = {
         ...(themeState === 'light' ? lightTheme : darkTheme),
         breakpoints: {

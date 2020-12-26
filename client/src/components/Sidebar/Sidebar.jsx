@@ -83,6 +83,7 @@ const Sidebar = () => {
                 roles: { [`${user?.userId}`]: ['admin', 'owner', 'member'] },
                 photoURL: '',
                 description: '',
+                created_at: firebase.firestore.FieldValue.serverTimestamp(),
             });
     };
 

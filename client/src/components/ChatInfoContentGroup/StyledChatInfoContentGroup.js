@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 export default styled.div`
-    background-color: ${(props) => (props.color ? `rgba(${props.color}, 0.2)` : 'white')};
+    background-color: ${(props) =>
+        props.color ? `rgba(${props.color}, 0.2)` : `rgb(${props.theme.lightBackground})`};
     padding: 1rem;
     margin-bottom: 0.5rem;
     display: flex;

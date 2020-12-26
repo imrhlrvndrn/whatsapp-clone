@@ -22,7 +22,7 @@ export const initialState = {
     chatDetails: {},
     chatInfoMember: {},
     messages: [],
-    chatInfo: true,
+    chatInfo: false,
 };
 
 const reducer = (state, action) => {

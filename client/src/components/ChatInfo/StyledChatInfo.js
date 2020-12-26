@@ -32,12 +32,12 @@ export default styled.div`
         height: 81px;
         align-items: center;
         padding: 0 1rem;
-        border-left: 1px solid white;
+        border-left: 1px solid rgb(${(props) => props.theme.lightBackground});
         background-color: rgb(${(props) => props.theme.mediumBackground});
 
         svg {
             cursor: pointer;
-            fill: rgb(${(props) => props.theme.darkBackground});
+            fill: rgb(${(props) => props.theme.icon});
             margin-right: 1rem;
         }
     }
