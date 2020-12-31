@@ -20,9 +20,9 @@ export default styled.div`
         }
 
         .sidebarChat__info {
-            h2 {
-                margin-bottom: 0.5rem;
-            }
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
 
             .lastText {
                 font-size: 0.8rem;

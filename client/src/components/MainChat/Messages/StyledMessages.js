@@ -31,6 +31,7 @@ export default styled.div`
 
     .message {
         margin-bottom: 0.5rem;
+        color: rgb(${(props) => props.theme.constants.darkText});
     }
 
     .timestamp {
@@ -42,6 +43,7 @@ export default styled.div`
             font-size: 0.8rem;
             opacity: ${(props) => (props.read ? '.8' : '.2')};
             fill: ${(props) => (props.read ? 'blue' : 'black')};
+            color: rgb(${(props) => props.theme.constants.darkText});
         }
 
         svg {

@@ -25,7 +25,9 @@ const SidebarChat = ({ id, name, imgUrl }) => {
                 <Avatar imgUrl={imgUrl} />
                 <div className='sidebarChat__info'>
                     <h2>{name ? name : 'Room name'}</h2>
-                    <p className='lastText'>{messages[0]?.message}</p>
+                    {messages?.length > 1 && (
+                        <p className='lastText'>{`${messages[0]?.message.slice(0, 25)}...`}</p>
+                    )}
                 </div>
             </Link>
         </StyledSidebarChat>

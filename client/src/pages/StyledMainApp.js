@@ -13,5 +13,6 @@ export default styled.div`
         height: 90vh;
         box-shadow: 0 0 10px 0 black;
         background-color: white;
+        overflow: hidden;
     }
 `;

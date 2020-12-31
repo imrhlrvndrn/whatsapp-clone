@@ -19,7 +19,7 @@ const Login = () => {
                 dispatch({
                     type: 'SET_USER',
                     user: {
-                        uid: data?.user?.uid,
+                        userId: data?.user?.uid,
                         name: data?.user?.displayName,
                         phoneNumber: data?.user?.phoneNumber,
                         email: data?.user?.email,

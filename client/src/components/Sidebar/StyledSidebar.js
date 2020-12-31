@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
     display: flex;
     flex-direction: column;
-    width: 25%;
+    width: ${(props) => (props.chatInfo === false ? '30%' : '25%')};
 
     .sidebar__header {
         display: flex;

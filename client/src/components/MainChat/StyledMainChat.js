@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
     display: flex;
     flex-direction: column;
-    width: 75%;
+    width: ${(props) => (props.chatInfo === false ? '70%' : '50%')};
 
     .mainChat__header {
         padding: 1rem;
@@ -26,10 +26,35 @@ export default styled.div`
         }
 
         &__icons {
+            position: relative;
+            display: flex;
+
             svg {
                 cursor: pointer;
                 margin-left: 2rem;
                 fill: rgb(${(props) => props.theme.icon});
+            }
+
+            .chatOptionsModal {
+                background-color: rgb(${(props) => props.theme.mediumBackground});
+                position: absolute;
+                top: calc(100% + 1.6rem);
+                right: 0;
+                width: max-content;
+                z-index: 5;
+
+                &__options {
+                    display: block;
+                    padding: 1rem 2rem;
+                    width: 100%;
+                    font-size: 1rem;
+                    transition: all 0.4s ease-in-out;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: rgb(${(props) => props.theme.darkBackground});
+                    }
+                }
             }
         }
     }
