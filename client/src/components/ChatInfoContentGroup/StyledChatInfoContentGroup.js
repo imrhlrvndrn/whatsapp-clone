@@ -10,7 +10,7 @@ export default styled.div`
     cursor: ${({ onClick }) => (onClick ? 'pointer' : 'default')};
 
     .copy {
-        flex: 0.8;
+        flex: 1;
 
         * {
             color: ${(props) => props.color && `rgb(${props.color})`};
@@ -27,6 +27,7 @@ export default styled.div`
         }
 
         &_participants {
+            width: 100%;
             display: flex;
             align-items: center;
             padding: 1rem 0;

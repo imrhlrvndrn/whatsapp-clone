@@ -1,14 +1,14 @@
 export const initialState = {
-    // user: null,
-    user: {
-        email: 'ricksondm18@gmail.com',
-        email_is_verified: true,
-        name: 'Rahul Ravindran',
-        phoneNumber: null,
-        photoURL:
-            'https://lh3.googleusercontent.com/a-/AOh14GgIsTRv4qVrjbFx0gUxDd3adq9N7sGco9jJSApYI5k=s96-c',
-        userId: 'kMLDPLPkzLbSh1d4nh9DmrzWN703',
-    },
+    user: null,
+    // user: {
+    //     email: 'ricksondm18@gmail.com',
+    //     email_is_verified: true,
+    //     name: 'Rahul Ravindran',
+    //     phoneNumber: null,
+    //     photoURL:
+    //         'https://lh3.googleusercontent.com/a-/AOh14GgIsTRv4qVrjbFx0gUxDd3adq9N7sGco9jJSApYI5k=s96-c',
+    //     userId: 'kMLDPLPkzLbSh1d4nh9DmrzWN703',
+    // },
     // user: {
     //     email: 'rahulr1116@gmail.com',
     //     email_is_verified: true,
