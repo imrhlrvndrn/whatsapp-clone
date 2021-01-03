@@ -52,4 +52,8 @@ export default styled.div`
             margin-left: 1rem;
         }
     }
+
+    @media screen and (${(props) => props.theme.breakpoints.mobile}) {
+        max-width: 90%;
+    }
 `;

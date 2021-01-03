@@ -10,8 +10,12 @@ export default styled.div`
         padding: 1rem;
         display: flex;
         align-items: center;
-        background-color: rgb(${(props) => props.theme.mediumBackground});
+        background-color: rgb(${(props) => props.theme.constants.colorBackground});
         border-left: 1px solid rgb(${(props) => props.theme.lightestBackground});
+
+        * {
+            color: white;
+        }
 
         img {
             margin-right: 1rem;
@@ -37,7 +41,7 @@ export default styled.div`
             svg {
                 cursor: pointer;
                 margin-left: 2rem;
-                fill: rgb(${(props) => props.theme.icon});
+                fill: black;
             }
 
             .chatOptionsModal {
@@ -55,6 +59,7 @@ export default styled.div`
                     font-size: 1rem;
                     transition: all 0.4s ease-in-out;
                     cursor: pointer;
+                    color: rgb(${(props) => props.theme.constants.darkText});
 
                     &:hover {
                         background-color: rgb(${(props) => props.theme.darkBackground});
@@ -120,6 +125,7 @@ export default styled.div`
 
             input {
                 flex: 1;
+                width: 80%;
             }
 
             button {
@@ -128,8 +134,9 @@ export default styled.div`
 
             svg {
                 display: inline-block;
-                height: 100%;
-                width: 35px;
+                height: 35px;
+                /* width: 35px; */
+                object-fit: contain;
                 margin: 0 1rem;
             }
         }
@@ -160,6 +167,22 @@ export default styled.div`
             &__chatForm {
                 button {
                     display: none;
+                }
+            }
+        }
+    }
+
+    @media screen and (${(props) => props.theme.breakpoints.mobile}) {
+        .mainChat__header {
+            svg {
+                height: 20px;
+                width: 20px;
+                object-fit: contain;
+            }
+
+            &__icons {
+                svg {
+                    margin-left: 0.5rem;
                 }
             }
         }

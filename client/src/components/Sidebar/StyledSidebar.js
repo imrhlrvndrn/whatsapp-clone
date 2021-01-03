@@ -33,17 +33,17 @@ export default styled.div`
             border-radius: 30px;
             background-color: white;
             display: flex;
-            justify-content: space-evenly;
+            justify-content: space-around;
             align-items: center;
 
             svg {
-                flex: 0.2;
+                width: 20%;
                 fill: rgb(${(props) => props.theme.icon});
             }
 
             input {
-                flex: 0.8;
-                padding: 1rem 0;
+                width: 80%;
+                padding: 1rem 1rem 1rem 0;
             }
         }
     }

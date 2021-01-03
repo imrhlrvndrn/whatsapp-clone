@@ -32,4 +32,12 @@ export default styled.div`
             color: white;
         }
     }
+
+    @media screen and (${(props) => props.theme.breakpoints.mobile}) {
+        .loginContainer {
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 0 0 0 transparent;
+        }
+    }
 `;

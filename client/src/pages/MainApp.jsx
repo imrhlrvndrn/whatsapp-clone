@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { useDataLayerValue } from '../DataLayer';
-import { db } from '../firebase';
+import { auth, db } from '../firebase';
 
 // Styled components
 import StyledMainApp from './StyledMainApp';
@@ -14,11 +14,12 @@ import ChatInfo from '../components/ChatInfo/ChatInfo';
 
 const MainApp = ({ messages }) => {
     const [{ user, chatInfo }, dispatch] = useDataLayerValue();
+    let memberDoc;
 
     useEffect(() => {
         (async () => {
             if (user?.userId) {
-                const memberDoc = await db.collection('members').doc(user?.userId).get();
+                memberDoc = await db.collection('members').doc(user?.userId).get();
 
                 if (!memberDoc.exists) {
                     db.collection('members').doc(`${user?.userId}`).set(
@@ -48,6 +49,31 @@ const MainApp = ({ messages }) => {
             }
         })();
     }, [user?.userId]);
+
+    useEffect(() => {
+        auth.onAuthStateChanged((userAuth) => {
+            console.log('USER AUTH:', userAuth);
+            if (userAuth) {
+                dispatch({
+                    type: 'SET_USER',
+                    user: {
+                        userId: userAuth?.uid,
+                        name: userAuth?.displayName,
+                        phoneNumber: userAuth?.phoneNumber,
+                        email: userAuth?.email,
+                        email_is_verified: userAuth?.emailVerified,
+                        photoURL: userAuth?.photoURL,
+                    },
+                });
+            } else {
+                dispatch({
+                    type: 'SET_USER',
+                    user: null,
+                });
+                auth.signOut();
+            }
+        });
+    }, []);
 
     return (
         <StyledMainApp>
