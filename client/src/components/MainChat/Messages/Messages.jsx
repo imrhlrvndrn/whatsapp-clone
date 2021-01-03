@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import { db } from '../../../firebase';
+import useContextMenu from '../../../utils/useContextMenu';
 import { useDataLayerValue } from '../../../DataLayer';
 
 // React icons
@@ -7,15 +9,20 @@ import ReadIcon from '../../../React icons/ReadIcon';
 
 // Styled components
 import StyledMessages from './StyledMessages';
+
+// React component
 import ContextMenu from '../../ContextMenu/ContextMenu';
 
 const Messages = ({ message }) => {
     const [read, setRead] = useState(false);
-    const [{ user }, dispatch] = useDataLayerValue();
+    const { xPos, yPos, showContextMenu } = useContextMenu();
+    const [{ user, chatDetails }, dispatch] = useDataLayerValue();
 
     useEffect(() => {
         setRead(true);
     }, []);
+
+    console.log('Message details: ', message);
 
     return (
         <>
@@ -33,7 +40,13 @@ const Messages = ({ message }) => {
                         <ReadIcon fill='black' width='20px' height='20px' />
                     )}
                 </div>
-                <ContextMenu menu={['Delete', 'Reply', 'Edit']} />
+                {showContextMenu && (
+                    <ContextMenu
+                        id={message?.id}
+                        position={{ xPos, yPos }}
+                        menu={[{ name: 'Delete' }, { name: 'Edit' }, { name: 'Reply' }]}
+                    />
+                )}
             </StyledMessages>
         </>
     );

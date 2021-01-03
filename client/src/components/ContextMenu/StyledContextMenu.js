@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
     position: absolute;
     background-color: black;
+    z-index: 100;
 
     .contextMenu_item {
         color: #eee;

@@ -17,7 +17,7 @@ import SearchIcon from '../../React icons/SearchIcon';
 import SidebarChat from './SidebarChat/SidebarChat';
 
 const Sidebar = () => {
-    const [{ user, chatRooms, chatInfo }, dispatch] = useDataLayerValue();
+    const [{ user, chatRooms, chatInfo, appState }, dispatch] = useDataLayerValue();
 
     useEffect(() => {
         const unsubscribe = db
@@ -88,7 +88,7 @@ const Sidebar = () => {
     };
 
     return (
-        <StyledSidebar chatInfo={chatInfo}>
+        <StyledSidebar chatInfo={chatInfo} appState={appState}>
             <div className='sidebar__header'>
                 <Avatar width='45px' height='45px' imgUrl={user?.photoURL} />
                 <div className='sidebar__header__icons'>

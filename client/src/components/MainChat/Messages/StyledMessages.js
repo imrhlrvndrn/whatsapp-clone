@@ -7,6 +7,7 @@ export default styled.div`
     width: max-content;
     max-width: 50%;
     border-radius: 10px;
+    position: relative;
 
     &.chat__receiver {
         margin: 0 0 0.3rem auto;

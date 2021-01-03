@@ -60,4 +60,13 @@ export default styled.div`
             background-color: rgba(${(props) => props.theme.constants.colorBackground}, 0.2);
         }
     }
+
+    @media screen and (${(props) => props.theme.breakpoints.lg_tablet}) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: ${(props) => (props.appState === 'sidebar' ? '999' : '0')};
+        width: 100%;
+        height: 100%;
+    }
 `;

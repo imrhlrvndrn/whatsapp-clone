@@ -53,4 +53,13 @@ export default styled.div`
             border-radius: 50%;
         }
     }
+
+    @media screen and (${(props) => props.theme.breakpoints.lg_tablet}) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: ${(props) => (props.appState === 'info' ? '999' : '0')};
+        width: 100%;
+        height: 100%;
+    }
 `;

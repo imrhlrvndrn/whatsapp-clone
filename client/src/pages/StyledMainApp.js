@@ -15,4 +15,11 @@ export default styled.div`
         background-color: white;
         overflow: hidden;
     }
+
+    @media screen and (${(props) => props.theme.breakpoints.lg_tablet}) {
+        .mainApp {
+            width: 100vw;
+            height: 100vh;
+        }
+    }
 `;

@@ -14,7 +14,10 @@ import { db } from '../../firebase';
 
 const ChatInfo = (props) => {
     const history = useHistory();
-    const [{ user, chatInfo, chatDetails, chatInfoMember }, dispatch] = useDataLayerValue();
+    const [
+        { user, chatInfo, chatDetails, chatInfoMember, appState },
+        dispatch,
+    ] = useDataLayerValue();
     const [isBlocked, setIsBlocked] = useState(false);
 
     const chatInfoDetails =
@@ -71,10 +74,13 @@ const ChatInfo = (props) => {
     const exitGroup = () => {};
 
     return (
-        <StyledChatInfo chatInfo={chatInfo}>
+        <StyledChatInfo chatInfo={chatInfo} appState={appState}>
             <div className='chat_info_header'>
                 <CloseIcon
-                    onClick={() => dispatch({ type: 'SET_CHAT_INFO', chatInfo: !chatInfo })}
+                    onClick={() => {
+                        dispatch({ type: 'SET_APP_STATE', appState: 'mainChat' });
+                        dispatch({ type: 'SET_CHAT_INFO', chatInfo: !chatInfo });
+                    }}
                 />
                 <h2>{chatDetails?.members?.length <= 2 ? 'Chat info' : 'Group info'}</h2>
             </div>

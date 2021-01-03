@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDataLayerValue } from '../../../DataLayer';
 import { db } from '../../../firebase';
 import Avatar from '../../Avatar/Avatar';
 
@@ -8,6 +9,7 @@ import StyledSidebarChat from './StyledSidebarChat';
 
 const SidebarChat = ({ id, name, imgUrl }) => {
     const [messages, setMessages] = useState([]);
+    const [{ appState }, dispatch] = useDataLayerValue();
 
     useEffect(() => {
         if (id) {
@@ -15,12 +17,15 @@ const SidebarChat = ({ id, name, imgUrl }) => {
                 .doc(id)
                 .collection('messages')
                 .orderBy('timestamp', 'desc')
+                // ! Optimize the below query to only limit retrieving one message i.e. the last one
                 .onSnapshot((snapshot) => setMessages(snapshot.docs.map((doc) => doc.data())));
         }
     }, [id]);
 
     return (
-        <StyledSidebarChat>
+        <StyledSidebarChat
+            onClick={() => dispatch({ type: 'SET_APP_STATE', appState: 'mainChat' })}
+        >
             <Link to={`/chats/${id}`}>
                 <Avatar imgUrl={imgUrl} />
                 <div className='sidebarChat__info'>

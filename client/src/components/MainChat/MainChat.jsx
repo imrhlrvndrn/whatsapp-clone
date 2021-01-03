@@ -3,13 +3,16 @@ import moment from 'moment';
 import firebase from 'firebase';
 import { db } from '../../firebase';
 import { useDataLayerValue } from '../../DataLayer';
+import useWindowSize from '../../utils/useWindowSize';
 
 // React icons
 import AttachmentIcon from '../../React icons/AttachmentIcon';
+import ArrowBack from '../../React icons/ArrowBack';
 import MoreOptionsIcon from '../../React icons/MoreOptionsIcon';
+import MicIcon from '../../React icons/MicIcon';
+import SendIcon from '../../React icons/SendIcon';
 import SearchIcon from '../../React icons/SearchIcon';
 import SmileIcon from '../../React icons/SmileIcon';
-import MicIcon from '../../React icons/MicIcon';
 
 // Styled components
 import StyledMainChat from './StyledMainChat';
@@ -19,7 +22,8 @@ import Avatar from '../Avatar/Avatar';
 import Messages from './Messages/Messages';
 
 const MainChat = ({ match }) => {
-    const [{ user, chatDetails, messages, chatInfo }, dispatch] = useDataLayerValue();
+    const _windowSize = useWindowSize();
+    const [{ user, chatDetails, messages, chatInfo, appState }, dispatch] = useDataLayerValue();
     const chatId = match.params.chatId;
     const [chatOptionsModal, setChatOptionsModal] = useState(false);
     const [input, setInput] = useState('');
@@ -27,9 +31,10 @@ const MainChat = ({ match }) => {
     const [isBlocked, setIsBlocked] = useState(false);
 
     useEffect(() => {
+        let unsubscribe, unsubscribeMessages;
         if (chatId) {
             let snapshotData = {};
-            const unsubscribe = db
+            unsubscribe = db
                 .collection('chats')
                 .doc(chatId)
                 .onSnapshot(async (snapshot) => {
@@ -89,11 +94,12 @@ const MainChat = ({ match }) => {
                     if (snapshot?.data()?.members?.includes(user?.userId)) {
                         // Check if the logged in user is a member of the chat
                         setIsMember(true);
-                        db.collection('chats')
+                        unsubscribeMessages = db
+                            .collection('chats')
                             .doc(chatId)
                             .collection('messages')
                             .orderBy('timestamp', 'desc')
-                            .limit(4)
+                            .limit(20)
                             .onSnapshot((messageSnapshot) =>
                                 dispatch({
                                     type: 'SET_CHAT_MESSAGES',
@@ -109,9 +115,11 @@ const MainChat = ({ match }) => {
                         setIsMember(false);
                     }
                 });
-
-            return () => unsubscribe();
         }
+        return () => {
+            unsubscribeMessages();
+            unsubscribe();
+        };
     }, [chatId]);
     console.log('cahtINfo for undefined check: ', chatDetails);
 
@@ -149,8 +157,14 @@ const MainChat = ({ match }) => {
 
     console.log('chatId: ', chatId);
     return (
-        <StyledMainChat chatInfo={chatInfo}>
+        <StyledMainChat chatInfo={chatInfo} appState={appState}>
             <div className='mainChat__header'>
+                {_windowSize?.width <= 1024 && (
+                    <ArrowBack
+                        style={{ marginRight: '1rem' }}
+                        onClick={() => dispatch({ type: 'SET_APP_STATE', appState: 'sidebar' })}
+                    />
+                )}
                 <Avatar width='45px' height='45px' imgUrl={chatDetails?.photoURL} />
                 <div className='mainChat__header__info'>
                     <h2>{chatDetails?.name}</h2>
@@ -174,6 +188,7 @@ const MainChat = ({ match }) => {
                             <span
                                 onClick={() => {
                                     setChatOptionsModal(false);
+                                    dispatch({ type: 'SET_APP_STATE', appState: 'info' });
                                     dispatch({ type: 'SET_CHAT_INFO', chatInfo: !chatInfo });
                                 }}
                                 className='chatOptionsModal__options'
@@ -228,12 +243,13 @@ const MainChat = ({ match }) => {
                                     name='chatbarInput'
                                     id='chatbarInput'
                                     placeholder='Type a message'
+                                    autoComplete='off'
                                 />
                                 <button onClick={sendMessage} type='submit'>
                                     Send a message
                                 </button>
+                                {input.length ? <SendIcon onClick={sendMessage} /> : <MicIcon />}
                             </form>
-                            <MicIcon />
                         </>
                     ) : (
                         <button

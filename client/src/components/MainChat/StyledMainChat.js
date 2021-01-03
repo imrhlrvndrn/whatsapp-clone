@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
     display: flex;
     flex-direction: column;
+    height: 100vh;
     width: ${(props) => (props.chatInfo === false ? '70%' : '50%')};
 
     .mainChat__header {
@@ -14,6 +15,10 @@ export default styled.div`
 
         img {
             margin-right: 1rem;
+        }
+
+        svg {
+            cursor: pointer;
         }
 
         &__info {
@@ -69,6 +74,7 @@ export default styled.div`
         overflow-y: auto;
         overflow-x: hidden;
         flex: 1;
+        height: calc(100% - 225px);
 
         /* width */
         ::-webkit-scrollbar {
@@ -106,7 +112,7 @@ export default styled.div`
         &__chatForm {
             flex: 1;
             border-radius: 30px;
-            margin: 0 1rem;
+            margin: 0 0 0 1rem;
             padding: 0 0 0 1rem;
             background-color: rgb(${(props) => props.theme.lightestBackground});
             display: flex;
@@ -117,9 +123,14 @@ export default styled.div`
             }
 
             button {
-                border-radius: 30px;
-                color: rgb(${(props) => props.theme.constants.lightText});
-                background-color: rgb(${(props) => props.theme.constants.colorBackground});
+                display: none;
+            }
+
+            svg {
+                display: inline-block;
+                height: 100%;
+                width: 35px;
+                margin: 0 1rem;
             }
         }
 
@@ -134,6 +145,23 @@ export default styled.div`
             height: calc(100% + 2rem);
             background-color: rgb(${(props) => props.theme.constants.colorBackground});
             color: white;
+        }
+    }
+
+    @media screen and (${(props) => props.theme.breakpoints.lg_tablet}) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: ${(props) => (props.appState === 'mainChat' ? '999' : '0')};
+        width: 100%;
+        height: 100%;
+
+        .mainChat__chatbarContainer {
+            &__chatForm {
+                button {
+                    display: none;
+                }
+            }
         }
     }
 `;

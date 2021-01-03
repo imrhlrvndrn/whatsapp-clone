@@ -1,14 +1,14 @@
 export const initialState = {
-    user: null,
-    // user: {
-    //     email: 'ricksondm18@gmail.com',
-    //     email_is_verified: true,
-    //     name: 'Rahul Ravindran',
-    //     phoneNumber: null,
-    //     photoURL:
-    //         'https://lh3.googleusercontent.com/a-/AOh14GgIsTRv4qVrjbFx0gUxDd3adq9N7sGco9jJSApYI5k=s96-c',
-    //     userId: 'kMLDPLPkzLbSh1d4nh9DmrzWN703',
-    // },
+    // user: null,
+    user: {
+        email: 'ricksondm18@gmail.com',
+        email_is_verified: true,
+        name: 'Rahul Ravindran',
+        phoneNumber: null,
+        photoURL:
+            'https://lh3.googleusercontent.com/a-/AOh14GgIsTRv4qVrjbFx0gUxDd3adq9N7sGco9jJSApYI5k=s96-c',
+        userId: 'kMLDPLPkzLbSh1d4nh9DmrzWN703',
+    },
     // user: {
     //     email: 'rahulr1116@gmail.com',
     //     email_is_verified: true,
@@ -23,6 +23,8 @@ export const initialState = {
     chatInfoMember: {},
     messages: [],
     chatInfo: false,
+    showContextMenu: false,
+    appState: 'mainChat', //Enum of [sidebar, mainChat, info]
 };
 
 const reducer = (state, action) => {
@@ -46,6 +48,12 @@ const reducer = (state, action) => {
 
         case 'SET_CHAT_INFO':
             return { ...state, chatInfo: action.chatInfo };
+
+        case 'SET_SHOW_CONTEXT_MENU':
+            return { ...state, showContextMenu: action.showContextMenu };
+
+        case 'SET_APP_STATE':
+            return { ...state, appState: action.appState };
 
         default:
             return state;
