@@ -3,7 +3,8 @@ import styled from 'styled-components';
 export default styled.div`
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
+    position: relative;
     width: ${(props) => (props.chatInfo === false ? '70%' : '50%')};
 
     .mainChat__header {
@@ -104,7 +105,8 @@ export default styled.div`
 
     .mainChat__chatbarContainer {
         display: flex;
-        position: relative;
+        position: sticky;
+        bottom: 0;
         align-items: center;
         padding: 0.5rem 1rem;
         background-color: rgb(${(props) => props.theme.mediumBackground});
@@ -164,6 +166,8 @@ export default styled.div`
         height: 100%;
 
         .mainChat__chatbarContainer {
+            position: relative;
+
             &__chatForm {
                 button {
                     display: none;

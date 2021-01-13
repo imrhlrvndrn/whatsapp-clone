@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import firebase from 'firebase';
-import { db } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { useDataLayerValue } from '../../DataLayer';
 
 // Styled conponents
@@ -92,7 +92,12 @@ const Sidebar = () => {
             <div className='sidebar__header'>
                 <Avatar width='45px' height='45px' imgUrl={user?.photoURL} />
                 <div className='sidebar__header__icons'>
-                    <StoriesIcon />
+                    <StoriesIcon
+                        onClick={() => {
+                            dispatch({ type: 'SET_USER', user: null });
+                            auth.signOut();
+                        }}
+                    />
                     <MessageIcon />
                     <MoreOptionsIcon />
                 </div>

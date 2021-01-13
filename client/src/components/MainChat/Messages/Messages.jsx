@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { db } from '../../../firebase';
-import useContextMenu from '../../../utils/useContextMenu';
 import { useDataLayerValue } from '../../../DataLayer';
 
 // React icons
@@ -12,10 +11,11 @@ import StyledMessages from './StyledMessages';
 
 // React component
 import ContextMenu from '../../ContextMenu/ContextMenu';
+import MoreOptionsIcon from '../../../React icons/MoreOptionsIcon';
 
 const Messages = ({ message }) => {
     const [read, setRead] = useState(false);
-    const { xPos, yPos, showContextMenu } = useContextMenu();
+    const [showContextMenu, setShowContextMenu] = useState(false);
     const [{ user, chatDetails }, dispatch] = useDataLayerValue();
 
     useEffect(() => {
@@ -32,7 +32,12 @@ const Messages = ({ message }) => {
                     message?.data?.userId === user?.userId && 'chat__receiver'
                 } messageContainer`}
             >
-                <p className='userName'>{message?.data?.name}</p>
+                <div className='messageHeader'>
+                    <p className='userName'>{message?.data?.name}</p>
+                    {user?.userId === message?.data?.userId && (
+                        <MoreOptionsIcon onClick={() => setShowContextMenu(!showContextMenu)} />
+                    )}
+                </div>
                 <p className='message'>{message?.data?.message}</p>
                 <div className='timestamp'>
                     <p>{moment(new Date(message?.data?.timestamp?.toDate())).format('hh:mm A')}</p>
@@ -43,8 +48,29 @@ const Messages = ({ message }) => {
                 {showContextMenu && (
                     <ContextMenu
                         id={message?.id}
-                        position={{ xPos, yPos }}
-                        menu={[{ name: 'Delete' }, { name: 'Edit' }, { name: 'Reply' }]}
+                        menu={[
+                            {
+                                name: 'Delete',
+                                onClick: (messageId) => {
+                                    db.collection('chats')
+                                        .doc(`${chatDetails?.id}`)
+                                        .collection('messages')
+                                        .doc(`${messageId}`)
+                                        .delete()
+                                        .then(() => console.log('Message deleted'))
+                                        .catch((error) => console.error(error));
+
+                                    console.log(`
+                                        Message delete initiated:
+                                        chatId: ${chatDetails?.id},
+                                        messageId: ${message?.id}
+                                    `);
+                                },
+                            },
+                            { name: 'Edit' },
+                            { name: 'Reply' },
+                        ]}
+                        setShowContextMenu={setShowContextMenu}
                     />
                 )}
             </StyledMessages>

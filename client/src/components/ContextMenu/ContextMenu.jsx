@@ -5,34 +5,17 @@ import { db } from '../../firebase';
 // Styled components
 import StyledContextMenu from './StyledContextMenu';
 
-const ContextMenu = ({ menu, id, position: { xPos, yPos } }) => {
+const ContextMenu = ({ menu, id, setShowContextMenu }) => {
     const [{ chatDetails }, dispatch] = useDataLayerValue();
-
-    const deleteMessage = (messageId) => {
-        db.collection('chats')
-            .doc(`${chatDetails?.id}`)
-            .collection('messages')
-            .doc(`${messageId}`)
-            .delete()
-            .then(() => console.log('Message deleted'))
-            .catch((error) => console.error(error));
-
-        console.log(`
-            Message delete initiated: 
-            chatId: ${chatDetails?.id},
-            messageId: ${id}
-        `);
-    };
 
     return (
         <>
-            <StyledContextMenu style={{ top: yPos, left: xPos }}>
-                {menu.map(({ name, onClickFn }) => (
+            <StyledContextMenu>
+                {menu.map(({ name, onClick }) => (
                     <div
                         onClick={() => {
-                            dispatch({ type: 'SET_SHOW_CONTEXT_MENU', showContextMenu: false });
-                            deleteMessage(id);
-                            console.log('Message delete initiated');
+                            if (onClick) onClick(id);
+                            setShowContextMenu(false);
                         }}
                         className='contextMenu_item'
                     >

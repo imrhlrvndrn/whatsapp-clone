@@ -16,7 +16,8 @@ const SidebarChat = ({ id, name, imgUrl }) => {
             db.collection('chats')
                 .doc(id)
                 .collection('messages')
-                .orderBy('timestamp', 'desc')
+                .orderBy('timestamp', 'desc') // Returns the most recent message
+                .limit(1)
                 // ! Optimize the below query to only limit retrieving one message i.e. the last one
                 .onSnapshot((snapshot) => setMessages(snapshot.docs.map((doc) => doc.data())));
         }
@@ -30,7 +31,7 @@ const SidebarChat = ({ id, name, imgUrl }) => {
                 <Avatar imgUrl={imgUrl} />
                 <div className='sidebarChat__info'>
                     <h2>{name ? name : 'Room name'}</h2>
-                    {messages?.length > 1 && (
+                    {messages?.length > 0 && (
                         <p className='lastText'>{`${messages[0]?.message.slice(0, 25)}...`}</p>
                     )}
                 </div>

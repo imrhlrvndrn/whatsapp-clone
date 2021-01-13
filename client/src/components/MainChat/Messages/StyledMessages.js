@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export default styled.div`
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
     padding: 0.5rem 1rem;
     background-color: rgb(${(props) => props.theme.lightestBackground});
     width: max-content;
@@ -10,11 +10,11 @@ export default styled.div`
     position: relative;
 
     &.chat__receiver {
-        margin: 0 0 0.3rem auto;
+        margin: 0 0 0.5rem auto;
         background-color: rgb(${(props) => props.theme.constants.lightColorBackground});
 
         &:first-of-type {
-            margin: 1rem 0 0.3rem auto;
+            margin: 0.5rem 0 0.5rem auto;
         }
     }
 
@@ -22,12 +22,24 @@ export default styled.div`
         margin-top: 0.3rem;
     }
 
-    .userName {
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        text-transform: capitalize;
-        color: rgb(${(props) => props.theme.constants.colorBackground});
+    .messageHeader {
+        width: 100%;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .userName {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            color: rgb(${(props) => props.theme.constants.colorBackground});
+        }
+
+        svg {
+            margin-left: 2rem;
+            cursor: pointer;
+        }
     }
 
     .message {
