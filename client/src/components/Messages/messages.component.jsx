@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import ReadIcon from '../../../React icons/ReadIcon';
 
 // Styled components
-import StyledMessages from './StyledMessages';
+import StyledMessages from './messages.styledcomponent';
 
-const Messages = ({ message }) => {
+export const Messages = ({ message }) => {
     const [read, setRead] = useState(false);
 
     useEffect(() => {
@@ -34,5 +34,3 @@ const Messages = ({ message }) => {
         </StyledMessages>
     );
 };
-
-export default Messages;

@@ -1,19 +1,18 @@
 import React from 'react';
 
 // Styled conponents
-import StyledSidebar from './StyledSidebar';
+import StyledSidebar from './sidebar.styledcomponent';
 
 // React icons
 import StoriesIcon from '../../React icons/StoriesIcon';
 
 // React components
-import Avatar from '../Avatar/Avatar';
+import { Avatar, ChatCard } from '../';
 import MessageIcon from '../../React icons/MessageIcon';
 import MoreOptionsIcon from '../../React icons/MoreOptionsIcon';
 import SearchIcon from '../../React icons/SearchIcon';
-import SidebarChat from './SidebarChat/SidebarChat';
 
-const Sidebar = () => {
+export const Sidebar = () => {
     return (
         <StyledSidebar>
             <div className='sidebar__header'>
@@ -40,10 +39,8 @@ const Sidebar = () => {
                 </div>
             </div>
             <div className='sidebarChat'>
-                <SidebarChat />
+                <ChatCard />
             </div>
         </StyledSidebar>
     );
 };
-
-export default Sidebar;

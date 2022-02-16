@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import GlobalStyles from './styledcomponents/GlobalStyles';
 import { lightTheme, darkTheme } from './styledcomponents/Themes';
 import { ThemeProvider } from 'styled-components';
-import axios from './axios';
+import { axios } from './config';
 
 // React components
-import MainApp from './pages/MainApp';
+import { MainApp } from './pages';
 
 const App = () => {
     const [themeState, setThemeState] = useState('light');
@@ -20,12 +20,12 @@ const App = () => {
         },
     };
 
-    useEffect(() => {
-        axios
-            .get('/messages/sync')
-            .then((response) => setMessages(response.data))
-            .catch((err) => console.log(err));
-    }, []);
+    // useEffect(() => {
+    //     axios
+    //         .get('/messages/sync')
+    //         .then((response) => setMessages(response.data))
+    //         .catch((err) => console.log(err));
+    // }, []);
 
     useEffect(() => {
         localStorage.setItem('theme', themeState);

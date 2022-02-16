@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const Message = require('../models/Message');
+const Message = require('../models/message.model');
 
 // Retrieve all the messages
 router.get('/sync', (req, res) => {

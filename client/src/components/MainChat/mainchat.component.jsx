@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from '../../axios';
+import React, { useState } from 'react';
+import { axios } from '../../config';
 
 // React icons
 import AttachmentIcon from '../../React icons/AttachmentIcon';
@@ -9,13 +9,12 @@ import SmileIcon from '../../React icons/SmileIcon';
 import MicIcon from '../../React icons/MicIcon';
 
 // Styled components
-import StyledMainChat from './StyledMainChat';
+import StyledMainChat from './mainchat.styledcomponent';
 
 // React components
-import Avatar from '../Avatar/Avatar';
-import Messages from './Messages/Messages';
+import { Avatar, Messages } from '../';
 
-const MainChat = ({ messages }) => {
+export const MainChat = ({ messages }) => {
     const [input, setInput] = useState('');
 
     const sendMessage = (event) => {
@@ -80,5 +79,3 @@ const MainChat = ({ messages }) => {
         </StyledMainChat>
     );
 };
-
-export default MainChat;

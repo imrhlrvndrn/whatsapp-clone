@@ -1,13 +1,12 @@
 import React from 'react';
 
 // Styled components
-import StyledMainApp from './StyledMainApp';
+import StyledMainApp from './app.styledcomponent';
 
 // React components
-import Sidebar from '../components/Sidebar/Sidebar';
-import MainChat from '../components/MainChat/MainChat';
+import { Sidebar, MainChat } from '../../components';
 
-const MainApp = ({ messages }) => {
+export const MainApp = ({ messages }) => {
     return (
         <StyledMainApp>
             <div className='mainApp'>
@@ -17,5 +16,3 @@ const MainApp = ({ messages }) => {
         </StyledMainApp>
     );
 };
-
-export default MainApp;
