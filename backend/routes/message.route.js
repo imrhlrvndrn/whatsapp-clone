@@ -31,4 +31,4 @@ router.post('/new', (req, res) => {
         });
 });
 
-module.exports = router;
+module.exports = { messageRoutes: router };
