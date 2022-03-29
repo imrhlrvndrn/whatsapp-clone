@@ -3,14 +3,14 @@ import styled from 'styled-components';
 export default styled.div`
     margin-bottom: 0.3rem;
     padding: 1rem;
-    background-color: rgb(${(props) => props.theme.lightestBackground});
+    background-color: ${(props) => props.theme.colors.lightestBackground};
     width: max-content;
     max-width: 50%;
     border-radius: 10px;
 
     &.chat__receiver {
         margin: 0 0 0.3rem auto;
-        background-color: rgb(${(props) => props.theme.constants.lightColorBackground});
+        background-color: ${(props) => props.theme.colors.constants.primary.light};
 
         &:first-of-type {
             margin: 1rem 0 0.3rem auto;
@@ -26,7 +26,7 @@ export default styled.div`
         font-weight: 600;
         margin-bottom: 0.5rem;
         text-transform: capitalize;
-        color: rgb(${(props) => props.theme.constants.colorBackground});
+        color: ${(props) => props.theme.colors.constants.primary.medium};
     }
 
     .message {

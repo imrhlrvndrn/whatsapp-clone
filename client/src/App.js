@@ -1,24 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import GlobalStyles from './styledcomponents/GlobalStyles';
-import { lightTheme, darkTheme } from './styledcomponents/Themes';
-import { ThemeProvider } from 'styled-components';
+import { Route, Routes } from 'react-router-dom';
 import { axios } from './config';
 
 // React components
-import { MainApp } from './pages';
+import { Auth, MainApp } from './pages';
 
 const App = () => {
-    const [themeState, setThemeState] = useState('light');
     const [messages, setMessages] = useState([]);
-    const theme = {
-        ...(themeState === 'light' ? lightTheme : darkTheme),
-        breakpoints: {
-            lg_tablet: 'max-width: 1100px',
-            tablet: 'max-width: 770px',
-            mobile: 'max-width: 510px',
-            sm_mobile: 'max-width: 350px',
-        },
-    };
 
     // useEffect(() => {
     //     axios
@@ -27,19 +15,11 @@ const App = () => {
     //         .catch((err) => console.log(err));
     // }, []);
 
-    useEffect(() => {
-        localStorage.setItem('theme', themeState);
-    }, [themeState, messages]);
-
-    const toggleTheme = () => {
-        themeState === 'light' ? setThemeState('dark') : setThemeState('light');
-    };
-
     return (
-        <ThemeProvider theme={theme}>
-            <GlobalStyles />
-            <MainApp messages={messages} />
-        </ThemeProvider>
+        <Routes>
+            <Route exact path='/' element={<MainApp messages={messages} />} />
+            <Route exact path='authenticate' element={<Auth />} />
+        </Routes>
     );
 };
 

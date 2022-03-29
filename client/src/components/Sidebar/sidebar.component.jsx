@@ -1,18 +1,82 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Styled conponents
 import StyledSidebar from './sidebar.styledcomponent';
 
-// React icons
-import StoriesIcon from '../../React icons/StoriesIcon';
-
-// React components
+// components
 import { Avatar, ChatCard } from '../';
-import MessageIcon from '../../React icons/MessageIcon';
-import MoreOptionsIcon from '../../React icons/MoreOptionsIcon';
-import SearchIcon from '../../React icons/SearchIcon';
+import { SearchIcon, StoriesIcon, MessageIcon, MoreOptionsIcon } from '../../react_icons';
+import { createChat, getUserChats, searchUsers } from '../../http';
+import { useDebounce } from '../../hooks';
+import { useAuthentication } from '../../context';
+import { getDMChatName } from './sidebar.utils';
 
 export const Sidebar = () => {
+    const [{ user }, authDispatch] = useAuthentication();
+    const [search, setSearch] = useState({
+        query: '',
+        results: [],
+    });
+    const [userChats, setUserChats] = useState([]);
+    const debouncedSearch = useDebounce(search.query, 500);
+
+    const searchForUsers = async () => {
+        if (!debouncedSearch) {
+            setSearch((prevState) => ({ query: '', results: [] }));
+            return;
+        }
+
+        try {
+            // fetch users
+            const {
+                data: { success, data, toast },
+            } = await searchUsers(search.query);
+            if (success) setSearch((prevState) => ({ ...prevState, results: data.users }));
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const fetchUserChats = async () => {
+        try {
+            const {
+                data: { success, data, toast },
+            } = await getUserChats(user?._id);
+
+            if (success) {
+                setUserChats(data.chats);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const createNewChatWithUser = async (friend_id) => {
+        try {
+            const {
+                data: { success, data, toast },
+            } = await createChat({ action_type: 'CREATE_DM_CHAT', friend_user_id: friend_id });
+
+            if (success) {
+                setSearch((prevState) => ({ query: '', results: [] }));
+                setUserChats((prevState) => [...prevState, data.chat]);
+            }
+        } catch (error) {
+            console.error(error);
+            alert(`Couldn't create chat`);
+        }
+    };
+
+    useEffect(() => {
+        searchForUsers();
+    }, [debouncedSearch]);
+
+    useEffect(() => {
+        (async () => await fetchUserChats())();
+    }, []);
+
+    console.log('user => ', user);
+
     return (
         <StyledSidebar>
             <div className='sidebar__header'>
@@ -32,6 +96,10 @@ export const Sidebar = () => {
                     <SearchIcon />
                     <input
                         type='text'
+                        value={search?.query}
+                        onChange={(event) =>
+                            setSearch((prevState) => ({ ...prevState, query: event.target.value }))
+                        }
                         name='searchBar'
                         id='searchBar'
                         placeholder='Search or start a new chat'
@@ -39,7 +107,28 @@ export const Sidebar = () => {
                 </div>
             </div>
             <div className='sidebarChat'>
-                <ChatCard />
+                {search?.query?.length > 0 &&
+                    search?.results?.map((user) => (
+                        <ChatCard
+                            onClick={() => createNewChatWithUser(user?._id)}
+                            title={user?.full_name}
+                            message=''
+                            avatar={user?.avatar}
+                        />
+                    ))}
+
+                {search?.query?.length === 0 &&
+                    userChats?.map((chat) => (
+                        <ChatCard
+                            title={
+                                !chat?.is_group_chat
+                                    ? getDMChatName({ logged_user: user, chat_users: chat?.users })
+                                    : chat?.name
+                            }
+                            message='The most latest message in this chat'
+                            avatar={chat?.avatar}
+                        />
+                    ))}
             </div>
         </StyledSidebar>
     );

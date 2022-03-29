@@ -5,12 +5,12 @@ export default styled.div`
     height: 100vh;
     display: grid;
     place-items: center;
-    background-color: rgb(${(props) => props.theme.darkBackground});
+    background-color: ${(props) => props.theme.colors.darkBackground};
 
     .mainApp {
         display: flex;
-        width: 90vw;
-        height: 90vh;
-        box-shadow: 0 0 10px 0 black;
+        width: 100%;
+        height: 100%;
+        /* box-shadow: 0 0 10px 0 black; */
     }
 `;

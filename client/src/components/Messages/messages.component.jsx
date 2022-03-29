@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 // React icons
-import ReadIcon from '../../../React icons/ReadIcon';
+import { ReadIcon } from '../../react_icons';
 
 // Styled components
 import StyledMessages from './messages.styledcomponent';

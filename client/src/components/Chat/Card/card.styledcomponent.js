@@ -7,24 +7,10 @@ export default styled.div`
     cursor: pointer;
 
     &:hover {
-        background-color: rgb(${(props) => props.theme.lightBackground});
+        background-color: ${(props) => props.theme.colors.lightBackground};
     }
 
     &.active {
-        background-color: rgb(${(props) => props.theme.mediumBackground});
-    }
-
-    img {
-        margin-right: 1rem;
-    }
-
-    .sidebarChat__info {
-        h2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .lastText {
-            font-size: 0.8rem;
-        }
+        background-color: ${(props) => props.theme.colors.mediumBackground};
     }
 `;

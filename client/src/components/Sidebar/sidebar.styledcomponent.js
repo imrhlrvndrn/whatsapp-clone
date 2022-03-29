@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 25%;
 
     .sidebar__header {
         display: flex;
@@ -11,46 +11,50 @@ export default styled.div`
         align-items: center;
         padding: 1rem;
         height: max-content;
-        background-color: rgb(${(props) => props.theme.mediumBackground});
+        background-color: ${(props) => props.theme.colors.darkBackground};
 
         &__icons {
             svg {
                 cursor: pointer;
                 margin-left: 2rem;
-                fill: rgb(${(props) => props.theme.icon});
+                fill: ${(props) => props.theme.colors.icon};
             }
         }
     }
 
     .sidebarSearchContainer {
         width: 100%;
-        padding: 0.5rem 0;
-        background-color: rgb(${(props) => props.theme.lightBackground});
+        padding: 1rem 0;
+        border-top: 2px solid ${(props) => props.theme.colors.mediumBackground};
+        border-bottom: 2px solid ${(props) => props.theme.colors.mediumBackground};
+        background-color: ${(props) => props.theme.colors.darkBackground};
 
         &__input {
             width: 90%;
             margin: 0 auto;
-            border-radius: 30px;
-            background-color: white;
+            border-radius: 10px;
+            background-color: ${(props) => props.theme.colors.mediumBackground};
             display: flex;
             justify-content: space-evenly;
             align-items: center;
 
             svg {
                 flex: 0.2;
-                fill: rgb(${(props) => props.theme.icon});
+                fill: ${(props) => props.theme.colors.icon};
             }
 
             input {
+                height: 45px;
                 flex: 0.8;
                 padding: 1rem 0;
+                color: ${(props) => props.theme.colors.text};
             }
         }
     }
 
     .sidebarChat {
         flex: 1;
-        background-color: rgb(${(props) => props.theme.lightestBackground});
+        background-color: ${(props) => props.theme.colors.darkBackground};
         height: auto;
         overflow-y: auto;
     }
